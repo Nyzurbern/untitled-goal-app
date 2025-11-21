@@ -29,7 +29,8 @@ struct ReflectionArchive: View {
                         VStack(alignment: .leading) {
                             Text(goal.title)
                                 .font(.subheadline)
-                            
+                            Text("What specific actions or habits contributed most to my progress?")
+                                .font(.caption)
                             Text(goal.actionsorhabits)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
@@ -38,6 +39,9 @@ struct ReflectionArchive: View {
                                 .foregroundColor(.secondary)
                             Text(goal.challenges)
                                 .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Text("What resources or support were most helpful?")
+                                .font(.caption)
                                 .foregroundColor(.secondary)
                             Text(goal.resourcesorsupport)
                                 .font(.subheadline)
