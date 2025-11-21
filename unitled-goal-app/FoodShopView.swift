@@ -12,7 +12,7 @@ struct FoodShopView: View {
     @State private var showingBuyConfirm = false
     @State private var showingNoBalanceAlert = false
     @State private var missingCoins = 0
-    @Binding var goal: Goal
+    @ObservedObject var ViewModel: GoalViewModel
     @Environment(\.dismiss) var dismiss
 
     let items = [
@@ -28,16 +28,19 @@ struct FoodShopView: View {
             dftype: "Food",
             image: "Brocoli",
             cost: 20,
-            fillAmount: 50
+            fillAmount: 40
         ),
-        Consumable(name: "Chocolate", dftype: "Food", image: "Chocolate", cost: 30, fillAmount: 50),
+        Consumable(name: "Bao", dftype: "Food", image: "Bao", cost: 30, fillAmount: 50),
+        Consumable(name: "Chocolate", dftype: "Food", image: "Chocolate", cost: 40, fillAmount: 60),
         Consumable(
             name: "Cake",
             dftype: "Food",
             image: "Cake",
-            cost: 40,
-            fillAmount: 90
+            cost: 50,
+            fillAmount: 70
         ),
+        Consumable(name: "Dango", dftype: "Food", image: "Dango", cost: 60, fillAmount: 80),
+        Consumable(name: "Avacado", dftype: "Food", image: "Avacado", cost: 70, fillAmount: 90)
     ]
 
     var body: some View {
@@ -49,11 +52,11 @@ struct FoodShopView: View {
                         .bold()
                         .padding(.top)
 
-                    if goal.coins < 0 {
-                        Text("Coins: \(goal.coins) 😬")
+                    if ViewModel.goal.coins < 0 {
+                        Text("Coins: \(ViewModel.goal.coins) 😬")
                             .foregroundColor(.red)
                     } else {
-                        Text("Coins: \(goal.coins) 🪙")
+                        Text("Coins: \(ViewModel.goal.coins) 🪙")
                             .font(.title2)
                             .foregroundStyle(.yellow)
                     }
@@ -104,12 +107,12 @@ struct FoodShopView: View {
         ) {
             Button("Sure!") {
                 guard let item = selectedItem else { return }
-                if goal.coins >= item.cost {
-                    goal.coins -= item.cost
-                    goal.foodprogressbar += CGFloat(item.fillAmount)
+                if ViewModel.goal.coins >= item.cost {
+                    ViewModel.goal.coins -= item.cost
+                    ViewModel.goal.foodprogressbar += CGFloat(item.fillAmount)
                     dismiss()
                 } else {
-                    missingCoins = item.cost - goal.coins
+                    missingCoins = item.cost - ViewModel.goal.coins
                     showingNoBalanceAlert = true
                 }
             }

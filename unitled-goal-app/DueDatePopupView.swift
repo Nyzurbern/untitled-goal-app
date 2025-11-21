@@ -24,8 +24,12 @@ struct DueDatePopupView: View {
                     .foregroundStyle(.red)
                 Text("What's the status of this goal?")
                     .font(.title2)
-                Button {
-                    isShowingReflectionSheet = true
+                NavigationLink {
+                    ReflectionSheetView(
+                        ViewModel: GoalViewModel(goal: ViewModel.goal),
+                        isShowingReflectionSheet: $isShowingReflectionSheet,
+                        archiveGoal: archiveGoal
+                    )
                 } label: {
                     Text("I didn't manage to do it..")
                         .padding(.vertical, 10)
@@ -50,8 +54,12 @@ struct DueDatePopupView: View {
                         .foregroundStyle(.white)
 
                 }
-                Button {
-                    isShowingReflectionSheet = true
+                NavigationLink {
+                    ReflectionSheetView(
+                        ViewModel: GoalViewModel(goal: ViewModel.goal),
+                        isShowingReflectionSheet: $isShowingReflectionSheet,
+                        archiveGoal: archiveGoal
+                    )
                 } label: {
                     Text("I completed my goal!!!!")
                         .padding(.vertical, 10)
@@ -63,17 +71,6 @@ struct DueDatePopupView: View {
                 }
 
                 .navigationTitle("")
-                .sheet(isPresented: $isShowingReflectionSheet) {
-                    ReflectionSheetView(
-                        ViewModel: GoalViewModel(goal: ViewModel.goal),
-                        isShowingReflectionSheet: $isShowingReflectionSheet,
-                        archiveGoal: archiveGoal
-                    )
-                }
-                .sheet(isPresented: $ExtendDueDate) {
-                    ExtendDueDateView(ViewModel: ViewModel)
-                        .environmentObject(userData)
-                }
             }
         }
 

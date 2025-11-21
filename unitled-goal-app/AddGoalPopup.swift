@@ -22,7 +22,8 @@ struct AddGoalPopupView: View {
     
     let characterOptions = [
         ("Male Icon", "Male"),
-        ("Female Icon", "Female")
+        ("Female Icon", "Female"),
+        ("Female Star Icon", "Female Star")
     ]
     
     var body: some View {
