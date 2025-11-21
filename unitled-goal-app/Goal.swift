@@ -33,6 +33,7 @@ struct Goal: Identifiable, Hashable, Codable {
     var reflections: [String] = []
     var character: Character
     var coins: Int
+    var failed: Bool = false
     var progress: Double {
         guard !subgoals.isEmpty else { return 0.0 }
         let done = subgoals.filter { $0.isCompleted }.count
