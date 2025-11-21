@@ -15,8 +15,8 @@ struct AddGoalPopupView: View {
     @State private var description: String = ""
     @State private var GoalDeadline: Date = Date()
     @State private var reward: Int = 50
-    @State private var image: String = "subject nobody"
-    @State private var profileImage: String = "Subject 3"
+    @State private var image: String = "Male"
+    @State private var profileImage: String = "Male Icon"
     @State private var CharacterPicked: Int = 0
     @State private var CharacterName: String = ""
     
