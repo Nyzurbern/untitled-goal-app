@@ -21,6 +21,7 @@ struct BigGoalCharacterView: View {
                     HStack {
                         if goal.characterName != "" {
                             Text("Hi! My name is \(goal.characterName)")
+                                .font(.title2)
                         }
                         Spacer()
                     }
@@ -54,10 +55,15 @@ struct BigGoalCharacterView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: 350, maxHeight: 350)
-                    Text(goal.deadline, format: .dateTime.day().month().year())
-                        .bold()
-                        .font(.title)
-                    
+                    HStack {
+                        Text("Due Date: ")
+                            .bold()
+                            .font(.title)
+                        Text(goal.deadline, format: .dateTime.day().month().year())
+                            .bold()
+                            .font(.title)
+
+                    }
                     HStack {
                         ZStack {
                             Rectangle()
