@@ -51,6 +51,9 @@ struct BigGoalCharacterView: View {
                     }
                     
                     Image(goal.character.image)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(maxWidth: 350, maxHeight: 350)
                     Text(goal.deadline, format: .dateTime.day().month().year())
                         .bold()
                         .font(.title)

@@ -102,7 +102,7 @@ final class UserData: ObservableObject {
         let today = Date()
         for goal in goals {
             let deadlineIsToday = calendar.isDate(goal.deadline, inSameDayAs: today)
-            if deadlineIsToday || goal.progress == 1.0 {
+            if (deadlineIsToday || goal.progress == 1.0) && goal.isCompleted == false {
                 // Publish the due/completed goal; UI can present a sheet
                 dueGoal = goal
                 break
