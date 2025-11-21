@@ -28,16 +28,19 @@ struct FoodShopView: View {
             dftype: "Food",
             image: "Brocoli",
             cost: 20,
-            fillAmount: 50
+            fillAmount: 40
         ),
-        Consumable(name: "Chocolate", dftype: "Food", image: "Chocolate", cost: 30, fillAmount: 50),
+        Consumable(name: "Bao", dftype: "Food", image: "Bao", cost: 30, fillAmount: 50),
+        Consumable(name: "Chocolate", dftype: "Food", image: "Chocolate", cost: 40, fillAmount: 60),
         Consumable(
             name: "Cake",
             dftype: "Food",
             image: "Cake",
-            cost: 40,
-            fillAmount: 90
+            cost: 50,
+            fillAmount: 70
         ),
+        Consumable(name: "Dango", dftype: "Food", image: "Dango", cost: 60, fillAmount: 80),
+        Consumable(name: "Avacado", dftype: "Food", image: "Avacado", cost: 70, fillAmount: 90)
     ]
 
     var body: some View {
