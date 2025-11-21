@@ -12,7 +12,7 @@ struct BigGoalCharacterView: View {
     @ObservedObject var ViewModel: GoalViewModel
     @State private var isShowingReflectionSheet = false
     @Environment(\.dismiss) private var dismiss
-    
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -62,7 +62,6 @@ struct BigGoalCharacterView: View {
                             .bold()
                             .font(.title)
 
-                    }
                     HStack {
                         ZStack {
                             Rectangle()
@@ -100,7 +99,7 @@ struct BigGoalCharacterView: View {
                             }
                         }
                     }
-                    
+
                     HStack {
                         ZStack {
                             Rectangle()
@@ -136,9 +135,12 @@ struct BigGoalCharacterView: View {
                                     .frame(height: 41.5)
                                     .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
+                            Text("💧")
                         }
+
+                        
                     }
-                    
+
                     HStack {
                         Text("Food: \(Int(ViewModel.goal.foodprogressbar))%/250")
                             .font(.caption)
@@ -151,13 +153,13 @@ struct BigGoalCharacterView: View {
                 .padding()
                 .background(Color.gray.opacity(0.06))
                 .cornerRadius(12)
-                
+
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Text("Sub-goals")
                             .font(.title2.bold())
                         Spacer()
-                        
+
                         NavigationLink {
                             AddSubGoalPopupView(ViewModel: ViewModel)
                         } label: {
@@ -195,7 +197,7 @@ struct BigGoalCharacterView: View {
                                     
                                     TextField("Sub-goal", text: subgoal.title)
                                         .font(.body)
-                                    
+
                                     Spacer()
                                     
                                     Text("+\(subgoal.coinReward.wrappedValue) coins")
@@ -221,11 +223,11 @@ struct BigGoalCharacterView: View {
             }
         }
     }
-    
+
     func didDismiss() {
         print("dismissed")
     }
-    
+
     private func archiveGoal() {
         print("Archive button tapped for goal: \(ViewModel.goal.title)")
         
@@ -233,7 +235,7 @@ struct BigGoalCharacterView: View {
         if let index = userData.goals.firstIndex(where: { $0.id == ViewModel.goal.id }) {
             userData.goals[index] = ViewModel.goal
         }
-        
+
         dismiss()
     }
 }
