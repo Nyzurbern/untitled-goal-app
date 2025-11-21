@@ -61,7 +61,6 @@ struct HomeView: View {
                             NavigationLink {
                                 BigGoalCharacterView(
                                     ViewModel: GoalViewModel(goal: goal),
-                                    goal: $goal
                                 )
                             } label: {
                                 GoalCardView(goal: goal)

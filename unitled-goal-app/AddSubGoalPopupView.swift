@@ -11,7 +11,7 @@ struct AddSubGoalPopupView: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
     
-    @Binding var goal: Goal
+    @ObservedObject var ViewModel: GoalViewModel
     @State private var title: String = ""
     @State private var reward: Int = 10
     @State var SubGoalDeadline:Date = Date()
@@ -36,7 +36,7 @@ struct AddSubGoalPopupView: View {
                     Button("Add") {
                         guard !userData.goals.isEmpty else { return }
                         let s = Subgoal(title: title, coinReward: reward)
-                        goal.subgoals.append(s)
+                        ViewModel.goal.subgoals.append(s)
                         dismiss()
                     }
                     .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || userData.goals.isEmpty)
