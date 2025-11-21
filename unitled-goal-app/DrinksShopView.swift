@@ -13,29 +13,31 @@ struct DrinksShopView: View {
     @State private var showingNoBalanceAlert = false
     @State private var missingCoins = 0
     @Binding var goal: Goal
+    @Environment(\.dismiss) var dismiss
 
     let items = [
         Consumable(
-            name: "Water",
+            name: "Lemonade",
             dftype: "Drink",
-            image: "subject nobody",
+            image: "Lemonade",
             cost: 10,
             fillAmount: 30
         ),
         Consumable(
             name: "Coffee",
             dftype: "Drink",
-            image: "subject nobody",
+            image: "Coffee",
             cost: 20,
             fillAmount: 50
         ),
         Consumable(
-            name: "Energy Drink",
+            name: "NRG Drink",
             dftype: "Drink",
-            image: "subject nobody",
+            image: "NRG Drink",
             cost: 30,
             fillAmount: 70
         ),
+        Consumable(name: "Frappuccino", dftype: "Drink", image: "Frappuccino", cost: 40, fillAmount: 90)
     ]
 
     var body: some View {
@@ -70,7 +72,11 @@ struct DrinksShopView: View {
                                 RoundedRectangle(cornerRadius: 12)
                                     .fill(Color.blue.opacity(0.12))
                                     .frame(height: 120)
-                                    .overlay(Text(item.name).bold())
+                                    .overlay(Image(item.image)
+                                        .resizable()
+                                        .scaledToFit())
+                                Text(item.name)
+                                    .bold()
                                 Text("\(item.cost) coins")
                                     .font(.caption)
                                     .foregroundColor(.secondary)
@@ -101,6 +107,7 @@ struct DrinksShopView: View {
                 if goal.coins >= item.cost {
                     goal.coins -= item.cost
                     goal.drinksprogressbar += CGFloat(item.fillAmount)
+                    dismiss()
                 } else {
                     missingCoins = item.cost - goal.coins
                     showingNoBalanceAlert = true

@@ -21,8 +21,8 @@ struct AddGoalPopupView: View {
     @State private var CharacterName: String = ""
     
     let characterOptions = [
-        ("Subject 3", "subject nobody"),
-        ("Subject 4", "")
+        ("Male Icon", "Male"),
+        ("Female Icon", "Female")
     ]
     
     var body: some View {
