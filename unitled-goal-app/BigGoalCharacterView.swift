@@ -24,28 +24,6 @@ struct BigGoalCharacterView: View {
                         }
                         Spacer()
                         
-                        if goal.progress == 1.0 {
-                            Button(action: {
-                                isShowingReflectionSheet.toggle()
-                            }) {
-                                if #available(iOS 26.0, *) {
-                                    Text("Reflect and archive")
-                                        .padding()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .glassEffect()
-                                } else {
-                                    Text("Reflect and archive")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .frame(height: 41.5)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
-                            }
-                            .sheet(isPresented: $isShowingReflectionSheet, onDismiss: didDismiss) {
-                                ReflectionSheetView(goal: $goal, isShowingReflectionSheet: $isShowingReflectionSheet, archiveGoal: archiveGoal)
-                            }
-                        }
                     }
                     
                     if goal.foodprogressbar <= 10 || goal.drinksprogressbar <= 10 {

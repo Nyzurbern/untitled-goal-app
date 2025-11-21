@@ -28,8 +28,18 @@ struct ReflectionArchive: View {
                     List(userData.goals) { goal in
                         VStack(alignment: .leading) {
                             Text(goal.title)
-                                .font(.headline)
-                            Text(goal.description)
+                                .font(.subheadline)
+                            
+                            Text(goal.actionsorhabits)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Text("What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Text(goal.challenges)
+                                .font(.subheadline)
+                                .foregroundColor(.secondary)
+                            Text(goal.resourcesorsupport)
                                 .font(.subheadline)
                                 .foregroundColor(.secondary)
                         }

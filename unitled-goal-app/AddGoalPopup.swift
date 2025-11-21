@@ -22,7 +22,7 @@ struct AddGoalPopupView: View {
     
     let characterOptions = [
         ("Subject 3", "subject nobody"),
-        ("Subject 4", "subject nobody") // Add your actual image names here
+        ("Subject 4", "")
     ]
     
     var body: some View {
