@@ -7,6 +7,12 @@
 
 import SwiftUI
 
+private extension String {
+    var isTrimmedEmpty: Bool {
+        trimmingCharacters(in: .whitespacesAndNewlines).isEmpty
+    }
+}
+
 struct AddGoalPopupView: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
@@ -14,11 +20,19 @@ struct AddGoalPopupView: View {
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var GoalDeadline: Date = Date()
-    @State private var reward: Int = 50
-    @State private var image: String = "subject nobody"
-    @State private var profileImage: String = "Subject 3"
+    @State private var image: String = ""
+    @State private var profileImage: String = ""
     @State private var CharacterPicked: Int = 0
     @State private var CharacterName: String = ""
+    
+    // True only when all required fields are non-empty after trimming
+    private var allRequiredFieldsFilled: Bool {
+        !title.isTrimmedEmpty &&
+        !description.isTrimmedEmpty &&
+        !CharacterName.isTrimmedEmpty &&
+        !image.isTrimmedEmpty &&
+        !profileImage.isTrimmedEmpty
+    }
     
     let characterOptions = [
         ("Male Icon", "Male"),
@@ -37,10 +51,6 @@ struct AddGoalPopupView: View {
                     DatePicker("Deadline", selection: $GoalDeadline, displayedComponents: .date)
                     TextField("Character name", text: $CharacterName)
                         .textInputAutocapitalization(.sentences)
-                }
-                
-                Section(header: Text("Reward")) {
-                    Text("Coin reward: \(reward)")
                 }
                 
                 Section(header: Text("Character")) {
@@ -73,8 +83,8 @@ struct AddGoalPopupView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         let g = Goal(
-                            title: title,
-                            description: description,
+                            title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+                            description: description.trimmingCharacters(in: .whitespacesAndNewlines),
                             deadline: GoalDeadline,
                             subgoals: [],
                             reflections: [],
@@ -84,20 +94,21 @@ struct AddGoalPopupView: View {
                                 waterLevel: 30,
                                 foodLevel: 30
                             ),
-                            coins: reward, // Fixed: use reward instead of hardcoded 10
+                            coins: 50,
                             foodprogressbar: 30,
                             drinksprogressbar: 30,
-                            characterName: CharacterName
+                            characterName: CharacterName.trimmingCharacters(in: .whitespacesAndNewlines)
                         )
                         userData.goals.append(g)
                         dismiss()
                     }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
+                    .disabled(!allRequiredFieldsFilled)
                 }
             }
         }
     }
 }
+
 #Preview {
     AddGoalPopupView()
         .environmentObject(UserData(sample: true))
