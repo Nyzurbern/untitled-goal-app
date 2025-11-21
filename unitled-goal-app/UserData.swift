@@ -16,6 +16,9 @@ final class UserData: ObservableObject {
         }
     }
     
+    // Publish the goal that became due or completed
+    @Published var dueGoal: Goal? = nil
+    
     private let saveKey = "SavedGoals"
     private var timer: Timer?
     private let lastDecreaseDateKey = "LastDecreaseDate"
@@ -45,6 +48,7 @@ final class UserData: ObservableObject {
         
         startDailyDecreaseTimer()
         checkDailyDecrease()
+        checkForDueGoals()
     }
     
     deinit {
@@ -54,6 +58,7 @@ final class UserData: ObservableObject {
     private func startDailyDecreaseTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 360, repeats: true) { _ in
             self.checkDailyDecrease()
+            self.checkForDueGoals()
         }
     }
     
@@ -71,7 +76,6 @@ final class UserData: ObservableObject {
     private func decreaseBarsForNewDay() {
         for index in goals.indices {
             goals[index].foodprogressbar = max(0, goals[index].foodprogressbar - 5)
-            
             goals[index].drinksprogressbar = max(0, goals[index].drinksprogressbar - 5)
         }
         
@@ -92,4 +96,18 @@ final class UserData: ObservableObject {
             print("Loaded \(goals.count) goals")
         }
     }
+    
+    private func checkForDueGoals() {
+        let calendar = Calendar.current
+        let today = Date()
+        for goal in goals {
+            let deadlineIsToday = calendar.isDate(goal.deadline, inSameDayAs: today)
+            if deadlineIsToday || goal.progress == 1.0 {
+                // Publish the due/completed goal; UI can present a sheet
+                dueGoal = goal
+                break
+            }
+        }
+    }
 }
+

@@ -77,6 +77,13 @@ struct HomeView: View {
                 AddGoalPopupView()
                     .environmentObject(userData)
             }
+            // Present due/completed goal popup
+            .sheet(item: $userData.dueGoal) { due in
+                DueDatePopupView(ViewModel: GoalViewModel(goal: due))
+                    .environmentObject(userData)
+                    .interactiveDismissDisabled()
+            }
         }
     }
 }
+

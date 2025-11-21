@@ -13,7 +13,7 @@ struct BigGoalCharacterView: View {
     @Binding var goal: Goal
     @State private var isShowingReflectionSheet = false
     @Environment(\.dismiss) private var dismiss
-
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
@@ -24,13 +24,38 @@ struct BigGoalCharacterView: View {
                         }
                         Spacer()
                         
+<<<<<<< HEAD
+=======
+                        if goal.progress == 1.0 {
+                            Button(action: {
+                                isShowingReflectionSheet.toggle()
+                            }) {
+                                if #available(iOS 26.0, *) {
+                                    Text("Reflect and archive")
+                                        .padding()
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                        .glassEffect()
+                                } else {
+                                    Text("Reflect and archive")
+                                        .padding()
+                                        .background(.blue)
+                                        .foregroundStyle(.white)
+                                        .frame(height: 41.5)
+                                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                                }
+                            }
+                            .sheet(isPresented: $isShowingReflectionSheet, onDismiss: didDismiss) {
+                                ReflectionSheetView(ViewModel: GoalViewModel(goal: goal), isShowingReflectionSheet: $isShowingReflectionSheet, archiveGoal: archiveGoal)
+                            }
+                        }
+>>>>>>> main
                     }
                     
-                    if goal.foodprogressbar <= 10 || goal.drinksprogressbar <= 10 {
+                    if goal.foodprogressbar <= 10 {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.red)
-                            Text("Your character is hungry/thirsty")
+                            Text("Your character is hungry!")
                                 .font(.caption)
                                 .bold()
                         }
@@ -38,7 +63,19 @@ struct BigGoalCharacterView: View {
                         .background(Color.red.opacity(0.1))
                         .cornerRadius(8)
                     }
-
+                    if goal.drinksprogressbar <= 10 {
+                        HStack {
+                            Image(systemName: "exclamationmark.triangle.fill")
+                                .foregroundColor(.red)
+                            Text("Your character is thirsty!")
+                                .font(.caption)
+                                .bold()
+                        }
+                        .padding(8)
+                        .background(Color.red.opacity(0.1))
+                        .cornerRadius(8)
+                    }
+                    
                     Image(goal.character.image)
                     Text(goal.deadline, format: .dateTime.day().month().year())
                         .bold()
@@ -62,7 +99,7 @@ struct BigGoalCharacterView: View {
                             }
                             Text("🍞")
                         }
-
+                        
                         NavigationLink {
                             FoodShopView(goal: $goal)
                         } label: {
@@ -81,7 +118,7 @@ struct BigGoalCharacterView: View {
                             }
                         }
                     }
-
+                    
                     HStack {
                         ZStack {
                             Rectangle()
@@ -100,7 +137,7 @@ struct BigGoalCharacterView: View {
                             }
                             Text("💧")
                         }
-
+                        
                         NavigationLink {
                             DrinksShopView(goal: $goal)
                         } label: {
@@ -132,13 +169,13 @@ struct BigGoalCharacterView: View {
                 .padding()
                 .background(Color.gray.opacity(0.06))
                 .cornerRadius(12)
-
+                
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Text("Sub-goals")
                             .font(.title2.bold())
                         Spacer()
-
+                        
                         NavigationLink {
                             AddSubGoalPopupView(goal: $goal)
                         } label: {
@@ -151,7 +188,7 @@ struct BigGoalCharacterView: View {
                         }
                     }
                     .padding(.horizontal)
-
+                    
                     if goal.subgoals.isEmpty {
                         Text("No subgoals yet. Add one to get started!")
                             .foregroundColor(.secondary)
@@ -173,12 +210,12 @@ struct BigGoalCharacterView: View {
                                             .foregroundColor(subgoal.isCompleted ? .green : .primary)
                                             .font(.title2)
                                     }
-
+                                    
                                     TextField("Sub-goal", text: $subgoal.title)
                                         .font(.body)
-
+                                    
                                     Spacer()
-
+                                    
                                     Text("+\(subgoal.coinReward) coins")
                                         .font(.caption)
                                         .foregroundColor(.yellow)
@@ -202,9 +239,9 @@ struct BigGoalCharacterView: View {
             }
         }
     }
-
+    
     func didDismiss() {
-       print("dismissed")
+        print("dismissed")
     }
     
     private func archiveGoal() {
