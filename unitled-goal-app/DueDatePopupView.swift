@@ -19,6 +19,11 @@ struct DueDatePopupView: View {
             VStack(spacing: 12) {
                 Text(ViewModel.goal.title)
                     .font(.title)
+                Text("IS DUE!")
+                    .font(.title)
+                    .foregroundStyle(.red)
+                Text("What's the status of this goal?")
+                    .font(.title2)
                 Button {
                     isShowingReflectionSheet = true
                 } label: {
