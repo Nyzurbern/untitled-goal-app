@@ -8,7 +8,8 @@
 import SwiftUI
 
 struct ReflectionSheetView: View {
-    @Binding var goal: Goal
+    @EnvironmentObject var userData: UserData
+    @ObservedObject var ViewModel: GoalViewModel
     @Binding var isShowingReflectionSheet: Bool
     let archiveGoal: () -> Void
     
@@ -20,7 +21,7 @@ struct ReflectionSheetView: View {
                         Text("What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $goal.challenges)
+                        TextField("Type here...", text: $ViewModel.goal.challenges)
                             .textInputAutocapitalization(.sentences)
                     }
                     
@@ -28,7 +29,7 @@ struct ReflectionSheetView: View {
                         Text("What specific actions or habits contributed most to my progress?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $goal.actionsorhabits)
+                        TextField("Type here...", text: $ViewModel.goal.actionsorhabits)
                             .textInputAutocapitalization(.sentences)
                     }
                     
@@ -36,7 +37,7 @@ struct ReflectionSheetView: View {
                         Text("What resources or support were most helpful?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $goal.resourcesorsupport)
+                        TextField("Type here...", text: $ViewModel.goal.resourcesorsupport)
                             .textInputAutocapitalization(.sentences)
                     }
                 }
