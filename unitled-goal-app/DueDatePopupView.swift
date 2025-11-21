@@ -17,6 +17,8 @@ struct DueDatePopupView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
+                Text(ViewModel.goal.title)
+                    .font(.title)
                 Button {
                     isShowingReflectionSheet = true
                 } label: {

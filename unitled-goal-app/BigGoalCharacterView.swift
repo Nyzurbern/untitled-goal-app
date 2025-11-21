@@ -23,32 +23,6 @@ struct BigGoalCharacterView: View {
                             Text("Hi! My name is \(goal.characterName)")
                         }
                         Spacer()
-                        
-<<<<<<< HEAD
-=======
-                        if goal.progress == 1.0 {
-                            Button(action: {
-                                isShowingReflectionSheet.toggle()
-                            }) {
-                                if #available(iOS 26.0, *) {
-                                    Text("Reflect and archive")
-                                        .padding()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .glassEffect()
-                                } else {
-                                    Text("Reflect and archive")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .frame(height: 41.5)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
-                            }
-                            .sheet(isPresented: $isShowingReflectionSheet, onDismiss: didDismiss) {
-                                ReflectionSheetView(ViewModel: GoalViewModel(goal: goal), isShowingReflectionSheet: $isShowingReflectionSheet, archiveGoal: archiveGoal)
-                            }
-                        }
->>>>>>> main
                     }
                     
                     if goal.foodprogressbar <= 10 {
