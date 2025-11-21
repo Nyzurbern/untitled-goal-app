@@ -10,20 +10,18 @@ import SwiftUI
 struct AddSubGoalPopupView: View {
     @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
-    
     @ObservedObject var ViewModel: GoalViewModel
-    @State private var title: String = ""
-    @State private var reward: Int = 10
-    @State var SubGoalDeadline:Date = Date()
+    @State private var title = ""
+    @State private var reward = 10
+    @State private var SubGoalDeadline = Date()
+
     var body: some View {
         NavigationStack {
             Form {
                 if userData.goals.isEmpty {
-                    Text("Add a goal first to attach sub-goals.")
-                        .foregroundColor(.secondary)
+                    Text("Add a goal first to attach sub-goals.").foregroundColor(.secondary)
                 } else {
-                    
-                    Section{
+                    Section {
                         TextField("Title", text: $title)
                         Text("Reward: \(reward) coins")
                         DatePicker("Deadline", selection: $SubGoalDeadline, displayedComponents: .date)
@@ -35,8 +33,9 @@ struct AddSubGoalPopupView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         guard !userData.goals.isEmpty else { return }
-                        let s = Subgoal(title: title, coinReward: reward)
+                        let s = Subgoal(title: title, coinReward: reward, deadline: SubGoalDeadline)
                         ViewModel.goal.subgoals.append(s)
+                        NotificationManager.shared.scheduleGoalNotifications(for: ViewModel.goal)
                         dismiss()
                     }
                     .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || userData.goals.isEmpty)
@@ -45,7 +44,3 @@ struct AddSubGoalPopupView: View {
         }
     }
 }
-//#Preview {
-//    AddSubGoalPopupView(goal: Goa)
-//        .environmentObject(UserData(sample: true))
-//}

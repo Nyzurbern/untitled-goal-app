@@ -7,7 +7,7 @@
 
 import Foundation
 import Combine
-import CoreGraphics
+import SwiftUI
 
 final class UserData: ObservableObject {
     @Published var goals: [Goal] = [] {
@@ -15,14 +15,14 @@ final class UserData: ObservableObject {
             saveGoals()
         }
     }
-    
-    // Publish the goal that became due or completed
+
+    // The goal that became due or completed (for showing popups)
     @Published var dueGoal: Goal? = nil
-    
+
     private let saveKey = "SavedGoals"
     private var timer: Timer?
     private let lastDecreaseDateKey = "LastDecreaseDate"
-    
+
     init(sample: Bool = false) {
         if sample {
             goals = [
@@ -45,50 +45,49 @@ final class UserData: ObservableObject {
         } else {
             loadGoals()
         }
-        
-        startDailyDecreaseTimer()
+
+        startDailyTimer()
         checkDailyDecrease()
         checkForDueGoals()
     }
-    
+
     deinit {
         timer?.invalidate()
     }
-    
-    private func startDailyDecreaseTimer() {
+
+    private func startDailyTimer() {
         timer = Timer.scheduledTimer(withTimeInterval: 360, repeats: true) { _ in
             self.checkDailyDecrease()
             self.checkForDueGoals()
         }
     }
-    
+
     private func checkDailyDecrease() {
         let currentDate = Date()
         let calendar = Calendar.current
-        
+
         let lastDecreaseDate = UserDefaults.standard.object(forKey: lastDecreaseDateKey) as? Date ?? currentDate
         if !calendar.isDate(lastDecreaseDate, inSameDayAs: currentDate) {
             decreaseBarsForNewDay()
             UserDefaults.standard.set(currentDate, forKey: lastDecreaseDateKey)
         }
     }
-    
+
     private func decreaseBarsForNewDay() {
         for index in goals.indices {
             goals[index].foodprogressbar = max(0, goals[index].foodprogressbar - 5)
             goals[index].drinksprogressbar = max(0, goals[index].drinksprogressbar - 5)
         }
-        
-        print("Daily decrease applied - Food: -5, Water: -5") // For debugging
+        print("Daily decrease applied - Food: -5, Water: -5")
     }
-    
+
     private func saveGoals() {
         if let encoded = try? JSONEncoder().encode(goals) {
             UserDefaults.standard.set(encoded, forKey: saveKey)
             print("Saved \(goals.count) goals")
         }
     }
-    
+
     private func loadGoals() {
         if let data = UserDefaults.standard.data(forKey: saveKey),
            let decoded = try? JSONDecoder().decode([Goal].self, from: data) {
@@ -96,19 +95,20 @@ final class UserData: ObservableObject {
             print("Loaded \(goals.count) goals")
         }
     }
-    
-    private func checkForDueGoals() {
+
+    func checkForDueGoals() {
         let calendar = Calendar.current
         let today = Date()
-        for goal in goals {
+        for index in goals.indices {
+            let goal = goals[index]
             let deadlineIsToday = calendar.isDate(goal.deadline, inSameDayAs: today)
             let didDeadlinePass = goal.deadline <= today
-            if (deadlineIsToday || didDeadlinePass || goal.progress == 1.0) && goal.isCompleted == false {
-                // Publish the due/completed goal; UI can present a sheet
+
+            if (deadlineIsToday || didDeadlinePass || goal.progress == 1.0) && !goal.isCompleted {
+                NotificationManager.shared.scheduleGoalNotifications(for: goal)
                 dueGoal = goal
                 break
             }
         }
     }
 }
-

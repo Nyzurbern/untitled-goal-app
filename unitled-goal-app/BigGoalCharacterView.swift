@@ -37,6 +37,7 @@ struct BigGoalCharacterView: View {
                         .background(Color.red.opacity(0.1))
                         .cornerRadius(8)
                     }
+                    
                     if ViewModel.goal.drinksprogressbar <= 10 {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -54,6 +55,7 @@ struct BigGoalCharacterView: View {
                         .resizable()
                         .scaledToFit()
                         .frame(maxWidth: 350, maxHeight: 350)
+                    
                     HStack {
                         Text("Due Date: ")
                             .bold()
@@ -84,19 +86,12 @@ struct BigGoalCharacterView: View {
                             NavigationLink {
                                 FoodShopView(ViewModel: ViewModel)
                             } label: {
-                                if #available(iOS 26.0, *) {
-                                    Text("Feed")
-                                        .padding()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .glassEffect()
-                                } else {
-                                    Text("Feed")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .frame(height: 41.5)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
+                                Text("Feed")
+                                    .padding()
+                                    .background(.blue)
+                                    .foregroundStyle(.white)
+                                    .frame(height: 41.5)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                         }
                         
@@ -122,20 +117,12 @@ struct BigGoalCharacterView: View {
                             NavigationLink {
                                 DrinksShopView(ViewModel: ViewModel)
                             } label: {
-                                if #available(iOS 26.0, *) {
-                                    Text("Drink")
-                                        .padding()
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                        .glassEffect()
-                                } else {
-                                    Text("Drink")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .frame(height: 41.5)
-                                        .clipShape(RoundedRectangle(cornerRadius: 8))
-                                }
-                                Text("💧")
+                                Text("Drink")
+                                    .padding()
+                                    .background(.blue)
+                                    .foregroundStyle(.white)
+                                    .frame(height: 41.5)
+                                    .clipShape(RoundedRectangle(cornerRadius: 8))
                             }
                         }
                         
@@ -143,6 +130,7 @@ struct BigGoalCharacterView: View {
                             Text("Food: \(Int(ViewModel.goal.foodprogressbar))/250")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
+                            
                             Text("Water: \(Int(ViewModel.goal.drinksprogressbar))/250")
                                 .font(.caption)
                                 .foregroundColor(.secondary)
@@ -222,18 +210,16 @@ struct BigGoalCharacterView: View {
             }
         }
     }
+    
     private func didDismiss() {
         print("dismissed")
     }
 
     private func archiveGoal() {
-        print("Archive button tapped for goal: \(ViewModel.goal.title)")
-        
         ViewModel.goal.isCompleted = true
         if let index = userData.goals.firstIndex(where: { $0.id == ViewModel.goal.id }) {
             userData.goals[index] = ViewModel.goal
         }
-        
         dismiss()
     }
 }

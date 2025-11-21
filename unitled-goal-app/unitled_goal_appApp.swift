@@ -8,10 +8,16 @@
 import SwiftUI
 
 @main
-struct unitled_goal_appApp: App {
+struct UnitledGoalApp: App {
+    @StateObject private var userData = UserData() // shared across app
+
     var body: some Scene {
         WindowGroup {
             ContentView()
+                .environmentObject(userData)
+                .onAppear {
+                    NotificationManager.shared.requestAuthorization()
+                }
         }
     }
 }
