@@ -29,7 +29,7 @@ struct ReflectionCard: View {
                     }
                 }
                 HStack {
-                    Text("Reflected on:")
+                    Text("Archived on:")
                         .font(.title2)
                     Text(goal.deadline, format: .dateTime.day().month().year())
                         .font(.title2)
