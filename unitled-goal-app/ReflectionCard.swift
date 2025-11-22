@@ -8,6 +8,8 @@
 import SwiftUI
 
 struct ReflectionCard: View {
+    @State private var clickToSeeMore = false
+    
     var goal: Goal
     
     var body: some View {
@@ -37,8 +39,12 @@ struct ReflectionCard: View {
             }
             Divider()
                 .frame(maxWidth: 250)
-            Text("Click to see more")
-                .font(.title2)
+            Button("Click to see more") {
+                clickToSeeMore.toggle()
+            }
+            .sheet(isPresented: $clickToSeeMore) {
+                ReflectionExpandedView(goal: goal)
+            }
                 .foregroundStyle(.blue)
         }
         .padding()

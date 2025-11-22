@@ -27,10 +27,10 @@ struct ReflectionArchive: View {
                     Spacer()
                 } else {
                     List(userData.goals) { goal in
-                        VStack(alignment: .leading) {
+                        VStack(alignment: .trailing) {
                             ZStack {
                                 RoundedRectangle(cornerRadius: 25.0, style: .continuous)
-                                    .fill(Color(white: 0.3, opacity: 0.90))
+                                    .fill(Color(.white))
                                 VStack {
                                     Text(goal.title)
                                         .font(.subheadline)
@@ -57,6 +57,7 @@ struct ReflectionArchive: View {
                                         .font(.subheadline)
                                         .foregroundColor(.secondary)
                                 }
+ 
                                 
                             }
                         }
