@@ -6,18 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct DueDatePopupView: View {
     @EnvironmentObject var userData: UserData
-    @ObservedObject var ViewModel: GoalViewModel
+//    @ObservedObject var ViewModel: GoalViewModel
     @State private var ExtendDueDate = false
     @State private var isShowingReflectionSheet = false
     @Environment(\.dismiss) private var dismiss
+    @Environment(\.modelContext) var modelContext
+    @Query var goals: [Goal]
+    @Bindable var goal: Goal
 
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
-                Text(ViewModel.goal.title)
+                Text(goal.title)
                     .font(.title)
                 Text("IS DUE!")
                     .font(.title)
@@ -26,9 +30,10 @@ struct DueDatePopupView: View {
                     .font(.title2)
                 NavigationLink {
                     ReflectionSheetView(
-                        ViewModel: GoalViewModel(goal: ViewModel.goal),
                         isShowingReflectionSheet: $isShowingReflectionSheet,
-                        archiveGoal: archiveGoal
+                        isFailed: true,
+                        goal: goal,
+                        archiveGoal: { archiveGoal(isFailed: true) }
                     )
                 } label: {
                     Text("I didn't manage to do it..")
@@ -41,7 +46,7 @@ struct DueDatePopupView: View {
                 }
 
                 NavigationLink {
-                    ExtendDueDateView(ViewModel: ViewModel)
+                    ExtendDueDateView(goal: goal)
                 } label: {
                     Text("I need more time!")
                         .padding(.vertical, 10)
@@ -56,9 +61,10 @@ struct DueDatePopupView: View {
                 }
                 NavigationLink {
                     ReflectionSheetView(
-                        ViewModel: GoalViewModel(goal: ViewModel.goal),
                         isShowingReflectionSheet: $isShowingReflectionSheet,
-                        archiveGoal: archiveGoal
+                        isFailed: false,
+                        goal: goal,
+                        archiveGoal: { archiveGoal(isFailed: false) }
                     )
                 } label: {
                     Text("I completed my goal!!!!")
@@ -75,15 +81,15 @@ struct DueDatePopupView: View {
         }
 
     }
-    private func archiveGoal() {
-        print("Archive button tapped for goal: \(ViewModel.goal.title)")
+    private func archiveGoal(isFailed: Bool) {
+        print("Archive button tapped for goal: \(goal.title)")
 
-        ViewModel.goal.isCompleted = true
-        if let index = userData.goals.firstIndex(where: {
-            $0.id == ViewModel.goal.id
-        }) {
-            userData.goals[index] = ViewModel.goal
+        goal.isCompleted = true
+        if isFailed {
+            goal.failed = true
         }
+        
+        userData.dueGoal = nil
 
         dismiss()
     }

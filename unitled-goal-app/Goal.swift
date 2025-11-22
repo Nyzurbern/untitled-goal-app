@@ -8,6 +8,7 @@
 import Foundation
 import Combine
 import SwiftUI
+import SwiftData
 
 class GoalViewModel: ObservableObject {
     @Published var goal: Goal
@@ -22,10 +23,10 @@ struct Subgoal: Identifiable, Hashable, Codable {
     var deadline: Date = Date() // Needed for notification scheduling
 }
 
-struct Goal: Identifiable, Hashable, Codable {
-    var id = UUID()
+@Model class Goal: Identifiable, Equatable {
+    var id = UUID()     
     var title: String
-    var description: String
+    var desc: String
     var deadline: Date
     var subgoals: [Subgoal] = []
     var isCompleted: Bool = false
@@ -44,6 +45,26 @@ struct Goal: Identifiable, Hashable, Codable {
     var challenges: String = ""
     var actionsorhabits: String = ""
     var resourcesorsupport: String = ""
+    var sortIndex: Int
+    init(id: UUID = UUID(), title: String, desc: String, deadline: Date, subgoals: [Subgoal], isCompleted: Bool, reflections: [String], character: Character, coins: Int, failed: Bool, foodprogressbar: Double, drinksprogressbar: Double, characterName: String, challenges: String, actionsorhabits: String, resourcesorsupport: String, sortIndex: Int) {
+        self.id = id
+        self.title = title
+        self.desc = desc
+        self.deadline = deadline
+        self.subgoals = subgoals
+        self.isCompleted = isCompleted
+        self.reflections = reflections
+        self.character = character
+        self.coins = coins
+        self.failed = failed
+        self.foodprogressbar = foodprogressbar
+        self.drinksprogressbar = drinksprogressbar
+        self.characterName = characterName
+        self.challenges = challenges
+        self.actionsorhabits = actionsorhabits
+        self.resourcesorsupport = resourcesorsupport
+        self.sortIndex = sortIndex
+    }
 }
 
 struct Character: Identifiable, Hashable, Codable {

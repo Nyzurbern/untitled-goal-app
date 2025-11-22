@@ -10,22 +10,24 @@ import SwiftUI
 struct ReflectionCard: View {
     @State private var clickToSeeMore = false
     
-    var goal: Goal
+    @Bindable var goal: Goal
     
     var body: some View {
         VStack(alignment: .center) {
             VStack(alignment: .leading) {
                 Text("Goal: " + goal.title)
                     .font(.title)
+                    .foregroundStyle(.black)
                 HStack {
                     Text("Status:")
                         .font(.title2)
+                        .foregroundStyle(.black)
                     if goal.failed {
                         Text("Failed")
                             .foregroundStyle(.red)
                             .font(.title2)
                     } else {
-                        Text("Achieved!")
+                        Text("Achieved")
                             .foregroundStyle(.green)
                             .font(.title2)
                     }
@@ -33,18 +35,15 @@ struct ReflectionCard: View {
                 HStack {
                     Text("Archived on:")
                         .font(.title2)
+                        .foregroundStyle(.black)
                     Text(goal.deadline, format: .dateTime.day().month().year())
                         .font(.title2)
+                        .foregroundStyle(.black)
                 }
             }
             Divider()
-                .frame(maxWidth: 250)
-            Button("Click to see more") {
-                clickToSeeMore.toggle()
-            }
-            .sheet(isPresented: $clickToSeeMore) {
-                ReflectionExpandedView(goal: goal)
-            }
+                .frame(maxWidth: 300)
+            Text("Click to see more")
     
         }
         .padding()
@@ -53,6 +52,6 @@ struct ReflectionCard: View {
     }
 }
 
-#Preview {
-    ReflectionCard(goal: Goal(title: "Get L1R5 of 6", description: "Sure", deadline: Date(), character: Character(profileImage: "no", image: "s", waterLevel: 1, foodLevel: 2), coins: 3))
-}
+//#Preview {
+//    ReflectionCard(goal: Goal(title: "Get L1R5 of 6", description: "Sure", deadline: Date(), character: Character(profileImage: "no", image: "s", waterLevel: 1, foodLevel: 2), coins: 3))
+//}

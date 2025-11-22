@@ -6,36 +6,37 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct BigGoalCharacterView: View {
-    @EnvironmentObject var userData: UserData
-    @ObservedObject var ViewModel: GoalViewModel
     @State private var isShowingReflectionSheet = false
     @Environment(\.dismiss) private var dismiss
-
+    @Bindable var goal: Goal
+    @State private var selectedSubgoalID: Subgoal.ID?
+    
     // Use a computed property so we don't reference ViewModel before init
     private var foodProgress: CGFloat {
-        CGFloat(ViewModel.goal.foodprogressbar) / 250.0
+        CGFloat(goal.foodprogressbar) / 250.0
     }
     
     private var drinkProgress: CGFloat {
-        CGFloat(ViewModel.goal.drinksprogressbar) / 250.0
+        CGFloat(goal.drinksprogressbar) / 250.0
     }
-
+    
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack {
                     VStack{
                         Text(
-                            "Hi! My name is \(ViewModel.goal.characterName)"
+                            "Hi! My name is \(goal.characterName)"
                         )
                         .font(.title)
-
+                        
                         Spacer()
                     }
-
-                    if ViewModel.goal.foodprogressbar <= 10 {
+                    
+                    if goal.foodprogressbar <= 10 {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.red)
@@ -47,8 +48,8 @@ struct BigGoalCharacterView: View {
                         .background(Color.red.opacity(0.1))
                         .cornerRadius(8)
                     }
-
-                    if ViewModel.goal.drinksprogressbar <= 10 {
+                    
+                    if goal.drinksprogressbar <= 10 {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
                                 .foregroundColor(.red)
@@ -60,15 +61,15 @@ struct BigGoalCharacterView: View {
                         .background(Color.red.opacity(0.1))
                         .cornerRadius(8)
                     }
-
+                    
                     ZStack {
-                        Image(ViewModel.goal.character.image)
+                        Image(goal.character.image)
                             .resizable()
                             .scaledToFit()
                             .frame(maxWidth: 350, maxHeight: 350)
                         HStack {
                             NavigationLink {
-                                FoodShopView(ViewModel: ViewModel)
+                                FoodShopView(goal: goal)
                             } label: {
                                 ZStack {
                                     if #available(iOS 26.0, *) {
@@ -97,14 +98,14 @@ struct BigGoalCharacterView: View {
                                     Circle()
                                         .trim(from: 0.0, to: min(foodProgress, 1.0)) // Trim based on computed progress
                                         .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
-                                        .foregroundColor(ViewModel.goal.foodprogressbar <= 10
+                                        .foregroundColor(goal.foodprogressbar <= 10
                                                          ? Color.red : Color.orange)
                                         .frame(width: 70, height: 70)
                                 }
                             }
                             Spacer()
                             NavigationLink {
-                                DrinksShopView(ViewModel: ViewModel)
+                                DrinksShopView(goal: goal)
                             } label: {
                                 ZStack {
                                     if #available(iOS 26.0, *) {
@@ -133,7 +134,7 @@ struct BigGoalCharacterView: View {
                                     Circle()
                                         .trim(from: 0.0, to: min(drinkProgress, 1.0)) // Trim based on computed progress
                                         .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
-                                        .foregroundColor(ViewModel.goal.drinksprogressbar <= 10
+                                        .foregroundColor(goal.drinksprogressbar <= 10
                                                          ? Color.red : Color.blue)
                                         .frame(width: 70, height: 70)
                                 }
@@ -146,7 +147,7 @@ struct BigGoalCharacterView: View {
                             .font(.title)
                         
                         Text(
-                            ViewModel.goal.deadline,
+                            goal.deadline,
                             format: .dateTime.day().month().year()
                         )
                         .bold()
@@ -154,12 +155,12 @@ struct BigGoalCharacterView: View {
                     }
                     HStack {
                         Text(
-                            "Food: \(Int(ViewModel.goal.foodprogressbar))/250"
+                            "Food: \(Int(goal.foodprogressbar))/250"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
                         Text(
-                            "Water: \(Int(ViewModel.goal.drinksprogressbar))/250"
+                            "Water: \(Int(goal.drinksprogressbar))/250"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -168,15 +169,15 @@ struct BigGoalCharacterView: View {
                 .padding()
                 .background(Color.gray.opacity(0.06))
                 .cornerRadius(12)
-
+                
                 VStack(alignment: .leading, spacing: 16) {
                     HStack {
                         Text("Sub-goals")
                             .font(.title2.bold())
                         Spacer()
-
+                        
                         NavigationLink {
-                            AddSubGoalPopupView(ViewModel: ViewModel)
+                            AddSubGoalPopupView(goal: goal)
                         } label: {
                             Image(
                                 systemName: "plus.circle.fill"
@@ -192,27 +193,42 @@ struct BigGoalCharacterView: View {
                         }
                     }
                     .padding(.horizontal)
-
-                    if ViewModel.goal.subgoals.isEmpty {
+                    
+                    if goal.subgoals.isEmpty {
                         Text("No subgoals yet. Add one to get started!")
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity, alignment: .center)
                             .padding()
                     } else {
                         List {
-                            ForEach($ViewModel.goal.subgoals) { subgoal in
+                            ForEach($goal.subgoals) { subgoal in
                                 HStack {
                                     Button {
                                         subgoal.isCompleted.wrappedValue
                                             .toggle()
                                         if subgoal.isCompleted.wrappedValue {
-                                            ViewModel.goal.coins +=
+                                            goal.coins +=
                                             subgoal.coinReward.wrappedValue
                                         } else {
-                                            ViewModel.goal.coins -=
+                                            goal.coins -=
                                             subgoal.coinReward.wrappedValue
                                         }
-                                    } label: {
+                                    }
+                                    .swipeActions(edge: .trailing) {
+                                        Button(role: .destructive) {
+                                                if let index = goal.subgoals.firstIndex(where: { $0.id == subgoal.id }) {
+                                                    goal.subgoals.remove(at: index)
+                                                }
+                                            } label: {
+                                                Label("Delete", systemImage: "trash")
+                                            }
+                                        Button{
+                                            selectedSubgoalID = subgoal.id.wrappedValue
+                                        } label: {
+                                            Label("Edit", systemImage: "pencil")
+                                        }
+                                    }
+                                    label: {
                                         Image(
                                             systemName: subgoal.isCompleted
                                                 .wrappedValue
@@ -225,12 +241,12 @@ struct BigGoalCharacterView: View {
                                         )
                                         .font(.title2)
                                     }
-
+                                    
                                     TextField("Sub-goal", text: subgoal.title)
                                         .font(.body)
-
+                                    
                                     Spacer()
-
+                                    
                                     Text(
                                         "+\(subgoal.coinReward.wrappedValue) coins"
                                     )
@@ -243,37 +259,44 @@ struct BigGoalCharacterView: View {
                                 }
                                 .padding(.vertical, 4)
                             }
-                            .onDelete { indexSet in
-                                ViewModel.goal.subgoals.remove(
-                                    atOffsets: indexSet
-                                )
-                            }
                         }
                         .listStyle(.plain)
                         .scrollContentBackground(.hidden)
                         .background(Color.clear)
                         .frame(
                             height: CGFloat(
-                                ViewModel.goal.subgoals.count
+                                goal.subgoals.count
                             ) * 70 + 20
                         )
                     }
                 }
             }
         }
-        .navigationTitle(ViewModel.goal.title)
+        .navigationTitle(goal.title)
+        .sheet(isPresented: Binding(
+            get: { selectedSubgoalID != nil },
+            set: { if !$0 { selectedSubgoalID = nil } }
+        )) {
+            if let subgoalID = selectedSubgoalID,
+               let index = goal.subgoals.firstIndex(where: { $0.id == subgoalID }) {
+                SubGoalEditingView(subgoal: $goal.subgoals[index])
+            } else {
+                Text("Subgoal not found")
+            }
+        }
     }
     private func didDismiss() {
         print("dismissed")
     }
-
-    private func archiveGoal() {
-        ViewModel.goal.isCompleted = true
-        if let index = userData.goals.firstIndex(where: {
-            $0.id == ViewModel.goal.id
-        }) {
-            userData.goals[index] = ViewModel.goal
-        }
-        dismiss()
-    }
+    
+    //    private func archiveGoal() {
+    //        goal.isCompleted = true
+    //        if let index = userData.goals.firstIndex(where: {
+    //            $0.id == goal.id
+    //        }) {
+    //            userData.goals[index] = goal
+    //        }
+    //        dismiss()
+    //    }
 }
+

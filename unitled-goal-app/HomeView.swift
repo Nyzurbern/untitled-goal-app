@@ -6,15 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 // HomeView.swift
 struct HomeView: View {
     @EnvironmentObject var userData: UserData
     @State private var showAddGoal = false
     @State private var showAddSubGoal = false
+    @State private var editingGoal = false
+    @State private var selectedGoalForEditing: Goal?
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \Goal.sortIndex) var goals: [Goal]
 
     var activeGoals: [Goal] {
-        userData.goals.filter { !$0.isCompleted }
+        goals.filter { !$0.isCompleted }
     }
 
     var body: some View {
@@ -47,35 +52,58 @@ struct HomeView: View {
                 .padding(.horizontal)
                 .padding(.top)
 
-                ScrollView {
-                    LazyVStack(spacing: 16) {
-                        ForEach(
-                            $userData.goals.filter {
-                                !$0.wrappedValue.isCompleted
-                            }
-                        ) { $goal in
-                            NavigationLink {
-                                BigGoalCharacterView(
-                                    ViewModel: GoalViewModel(goal: goal)
-                                )
+                List {
+                    ForEach(
+                        goals.filter {
+                            !$0.isCompleted
+                        }
+                    ) { goal in
+                        NavigationLink {
+                            BigGoalCharacterView(goal: goal)
+                        } label: {
+                            GoalCardView(goal: goal)
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .swipeActions(edge: .trailing) {
+                            Button(role: .destructive) {
+                                modelContext.delete(goal)
                             } label: {
-                                GoalCardView(goal: goal)
+                                Label("Delete", systemImage: "trash")
                             }
-                            .buttonStyle(PlainButtonStyle())
+                            Button{
+                                selectedGoalForEditing = goal
+                            } label: {
+                                Label("Edit", systemImage: "pencil")
+                            }
                         }
                     }
-                    .padding()
                 }
+                .listStyle(.automatic)
             }
             .navigationTitle("")
             .sheet(isPresented: $showAddGoal) {
                 AddGoalPopupView()
                     .environmentObject(userData)
             }
+            .sheet(item: $selectedGoalForEditing) { goal in
+                GoalEditingView(goal: goal)
+            }
             .sheet(item: $userData.dueGoal) { due in
-                DueDatePopupView(ViewModel: GoalViewModel(goal: due))
+                DueDatePopupView(goal: due)
                     .environmentObject(userData)
                     .interactiveDismissDisabled()
+            }
+            .onAppear {
+                userData.checkDailyDecrease(goals: goals)
+                userData.checkForDueGoals(goals: goals)
+            }
+            .onReceive(NotificationCenter.default.publisher(for: .userDataTick)) { _ in
+                userData.checkDailyDecrease(goals: goals)
+                userData.checkForDueGoals(goals: goals)
+            }
+            .onChange(of: goals) {
+                userData.checkDailyDecrease(goals: goals)
+                userData.checkForDueGoals(goals: goals)
             }
         }
     }

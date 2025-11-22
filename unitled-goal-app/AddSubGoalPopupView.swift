@@ -6,19 +6,20 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct AddSubGoalPopupView: View {
-    @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
-    @ObservedObject var ViewModel: GoalViewModel
     @State private var title = ""
     @State private var reward = 10
     @State private var SubGoalDeadline = Date()
-
+    @Query var goals: [Goal]
+    @Bindable var goal: Goal
+    
     var body: some View {
         NavigationStack {
             Form {
-                if userData.goals.isEmpty {
+                if goals.isEmpty {
                     Text("Add a goal first to attach sub-goals.").foregroundColor(.secondary)
                 } else {
                     Section {
@@ -32,13 +33,13 @@ struct AddSubGoalPopupView: View {
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
-                        guard !userData.goals.isEmpty else { return }
+                        guard !goals.isEmpty else { return }
                         let s = Subgoal(title: title, coinReward: reward, deadline: SubGoalDeadline)
-                        ViewModel.goal.subgoals.append(s)
-                        NotificationManager.shared.scheduleGoalNotifications(for: ViewModel.goal)
+                        goal.subgoals.append(s)
+                        NotificationManager.shared.scheduleGoalNotifications(for: goal)
                         dismiss()
                     }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || userData.goals.isEmpty)
+                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty || goals.isEmpty)
                 }
             }
         }

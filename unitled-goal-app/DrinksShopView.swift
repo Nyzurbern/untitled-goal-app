@@ -12,8 +12,8 @@ struct DrinksShopView: View {
     @State private var showingBuyConfirm = false
     @State private var showingNoBalanceAlert = false
     @State private var missingCoins = 0
-    @ObservedObject var ViewModel: GoalViewModel
     @Environment(\.dismiss) var dismiss
+    @Bindable var goal: Goal
 
     let items = [
         Consumable(
@@ -70,11 +70,11 @@ struct DrinksShopView: View {
                         .bold()
                         .padding(.top)
 
-                    if ViewModel.goal.coins < 0 {
-                        Text("Coins: \(ViewModel.goal.coins) 😬")
+                    if goal.coins < 0 {
+                        Text("Coins: \(goal.coins) 😬")
                             .foregroundColor(.red)
                     } else {
-                        Text("Coins: \(ViewModel.goal.coins) 🪙")
+                        Text("Coins: \(goal.coins) 🪙")
                             .font(.title2)
                             .foregroundStyle(.yellow)
                     }
@@ -125,12 +125,12 @@ struct DrinksShopView: View {
         ) {
             Button("Sure!") {
                 guard let item = selectedItem else { return }
-                if ViewModel.goal.coins >= item.cost {
-                    ViewModel.goal.coins -= item.cost
-                    ViewModel.goal.drinksprogressbar += CGFloat(item.fillAmount)
+                if goal.coins >= item.cost {
+                    goal.coins -= item.cost
+                    goal.drinksprogressbar += CGFloat(item.fillAmount)
                     dismiss()
                 } else {
-                    missingCoins = item.cost - ViewModel.goal.coins
+                    missingCoins = item.cost - goal.coins
                     showingNoBalanceAlert = true
                 }
             }

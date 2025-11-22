@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 private extension String {
     var isTrimmedEmpty: Bool {
@@ -16,6 +17,8 @@ private extension String {
 struct AddGoalPopupView: View {
     @Environment(\.dismiss) var dismiss
     @EnvironmentObject var userData: UserData
+    @Environment(\.modelContext) var modelContext
+    @Query var goals: [Goal]
     
     @State private var title: String = ""
     @State private var description: String = ""
@@ -68,7 +71,7 @@ struct AddGoalPopupView: View {
                                             if CharacterPicked == index + 1 {
                                                 Circle().stroke(.blue, lineWidth: 4)
                                             }
-                                    }
+                                        }
                                 }
                             }
                         }
@@ -81,9 +84,10 @@ struct AddGoalPopupView: View {
                     Button("Add") {
                         let g = Goal(
                             title: title.trimmingCharacters(in: .whitespacesAndNewlines),
-                            description: description.trimmingCharacters(in: .whitespacesAndNewlines),
+                            desc: description.trimmingCharacters(in: .whitespacesAndNewlines),
                             deadline: GoalDeadline,
                             subgoals: [],
+                            isCompleted: false,
                             reflections: [],
                             character: Character(
                                 profileImage: profileImage,
@@ -92,11 +96,16 @@ struct AddGoalPopupView: View {
                                 foodLevel: 30
                             ),
                             coins: 50,
+                            failed: false,
                             foodprogressbar: 30,
                             drinksprogressbar: 30,
-                            characterName: CharacterName.trimmingCharacters(in: .whitespacesAndNewlines)
+                            characterName: CharacterName.trimmingCharacters(in: .whitespacesAndNewlines),
+                            challenges: "",
+                            actionsorhabits: "",
+                            resourcesorsupport: "",
+                            sortIndex: (goals.max(by: { $0.sortIndex < $1.sortIndex })?.sortIndex ?? 0) + 1
                         )
-                        userData.goals.append(g)
+                        modelContext.insert(g)
                         dismiss()
                         // Schedule notifications for the goal
                         NotificationManager.shared.scheduleGoalNotifications(for: g)
@@ -107,4 +116,3 @@ struct AddGoalPopupView: View {
         }
     }
 }
-

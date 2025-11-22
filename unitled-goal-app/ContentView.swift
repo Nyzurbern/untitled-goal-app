@@ -8,7 +8,6 @@
 import SwiftUI
 
 struct ContentView: View {
-    @StateObject var userData = UserData(sample: false)
     @AppStorage("hasSeenOnboarding") private var hasSeenOnboarding: Bool = false
     @State private var showingOnboarding: Bool = false
 
@@ -18,13 +17,11 @@ struct ContentView: View {
                 .tabItem {
                     Label("Home", systemImage: "house.fill")
                 }
-                .environmentObject(userData)
 
             ReflectionArchive()
                 .tabItem {
                     Label("Archive", systemImage: "book.fill")
                 }
-                .environmentObject(userData)
         }
         .onAppear {
             showingOnboarding = !hasSeenOnboarding
@@ -34,7 +31,6 @@ struct ContentView: View {
                 hasSeenOnboarding = true
                 showingOnboarding = false
             }
-            .environmentObject(userData)
         }
     }
 }

@@ -6,22 +6,22 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ExtendDueDateView: View {
     @EnvironmentObject var userData: UserData
-    @ObservedObject var ViewModel: GoalViewModel
     @Environment(\.dismiss) private var dismiss
+    @Bindable var goal: Goal
 
     @State private var newDate: Date
 
-    init(ViewModel: GoalViewModel) {
-        self.ViewModel = ViewModel
-        _newDate = State(initialValue: ViewModel.goal.deadline)
+    init(goal: Goal) {
+        self.goal = goal
+        _newDate = State(initialValue: goal.deadline)
     }
 
     private var minimumDate: Date {
-
-        max(Date(), ViewModel.goal.deadline)
+        max(Date(), goal.deadline)
     }
 
     var body: some View {
@@ -41,30 +41,12 @@ struct ExtendDueDateView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") {
                         userData.dueGoal = nil
-                        save()
+                        goal.deadline = newDate
+                        dismiss()
                     }
-                        .bold()
+                    .bold()
                 }
             }
         }
-    }
-
-    private func save() {
-        if let index = userData.goals.firstIndex(where: {
-            $0.id == ViewModel.goal.id
-        }) {
-            var updatedGoal = userData.goals[index]
-            
-            updatedGoal.deadline = newDate
-            
-            userData.goals[index] = updatedGoal
-            
-            ViewModel.goal = updatedGoal
-            
-            userData.dueGoal = nil
-            NotificationManager.shared.scheduleGoalNotifications(for: updatedGoal)
-        }
-
-        dismiss()
     }
 }

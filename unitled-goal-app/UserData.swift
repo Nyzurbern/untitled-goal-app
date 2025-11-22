@@ -8,47 +8,16 @@
 import Foundation
 import Combine
 import SwiftUI
+import SwiftData
 
 final class UserData: ObservableObject {
-    @Published var goals: [Goal] = [] {
-        didSet {
-            saveGoals()
-        }
-    }
-
-    // The goal that became due or completed (for showing popups)
     @Published var dueGoal: Goal? = nil
 
-    private let saveKey = "SavedGoals"
     private var timer: Timer?
     private let lastDecreaseDateKey = "LastDecreaseDate"
 
-    init(sample: Bool = false) {
-        if sample {
-            goals = [
-                Goal(
-                    title: "Write Essay",
-                    description: "Finish the 1500-word essay on climate.",
-                    deadline: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date(),
-                    subgoals: [
-                        Subgoal(title: "Outline", coinReward: 10),
-                        Subgoal(title: "Draft", coinReward: 20),
-                        Subgoal(title: "Proofread", coinReward: 10)
-                    ],
-                    reflections: ["Start early next time"],
-                    character: Character(profileImage: "Subject 3", image: "subject nobody", waterLevel: 30, foodLevel: 30),
-                    coins: 10,
-                    foodprogressbar: 30,
-                    drinksprogressbar: 30
-                )
-            ]
-        } else {
-            loadGoals()
-        }
-
+    init() {
         startDailyTimer()
-        checkDailyDecrease()
-        checkForDueGoals()
     }
 
     deinit {
@@ -56,59 +25,55 @@ final class UserData: ObservableObject {
     }
 
     private func startDailyTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 360, repeats: true) { _ in
-            self.checkDailyDecrease()
-            self.checkForDueGoals()
+        timer = Timer.scheduledTimer(withTimeInterval: 360, repeats: true) { [weak self] _ in
+            guard self != nil else { return }
+            NotificationCenter.default.post(name: .userDataTick, object: nil)
         }
     }
 
-    private func checkDailyDecrease() {
+    func checkDailyDecrease(goals: [Goal]) {
         let currentDate = Date()
         let calendar = Calendar.current
 
         let lastDecreaseDate = UserDefaults.standard.object(forKey: lastDecreaseDateKey) as? Date ?? currentDate
         if !calendar.isDate(lastDecreaseDate, inSameDayAs: currentDate) {
-            decreaseBarsForNewDay()
+            decreaseBarsForNewDay(goals: goals)
             UserDefaults.standard.set(currentDate, forKey: lastDecreaseDateKey)
         }
     }
 
-    private func decreaseBarsForNewDay() {
-        for index in goals.indices {
-            goals[index].foodprogressbar = max(0, goals[index].foodprogressbar - 5)
-            goals[index].drinksprogressbar = max(0, goals[index].drinksprogressbar - 5)
+    private func decreaseBarsForNewDay(goals: [Goal]) {
+        for goal in goals {
+            goal.foodprogressbar = max(0, goal.foodprogressbar - 5)
+            goal.drinksprogressbar = max(0, goal.drinksprogressbar - 5)
         }
         print("Daily decrease applied - Food: -5, Water: -5")
     }
 
-    private func saveGoals() {
-        if let encoded = try? JSONEncoder().encode(goals) {
-            UserDefaults.standard.set(encoded, forKey: saveKey)
-            print("Saved \(goals.count) goals")
-        }
-    }
-
-    private func loadGoals() {
-        if let data = UserDefaults.standard.data(forKey: saveKey),
-           let decoded = try? JSONDecoder().decode([Goal].self, from: data) {
-            goals = decoded
-            print("Loaded \(goals.count) goals")
-        }
-    }
-
-    func checkForDueGoals() {
+    func checkForDueGoals(goals: [Goal]) {
         let calendar = Calendar.current
-        let today = Date()
-        for index in goals.indices {
-            let goal = goals[index]
-            let deadlineIsToday = calendar.isDate(goal.deadline, inSameDayAs: today)
-            let didDeadlinePass = goal.deadline <= today
+        let now = Date()
+        let startOfToday = calendar.startOfDay(for: now)
+        let startOfTomorrow = calendar.date(byAdding: .day, value: 1, to: startOfToday)!
 
-            if (deadlineIsToday || didDeadlinePass || goal.progress == 1.0) && !goal.isCompleted {
-                NotificationManager.shared.scheduleGoalNotifications(for: goal)
-                dueGoal = goal
+        var found: Goal? = nil
+        for goal in goals where !goal.isCompleted {
+            let deadline = goal.deadline
+            let isToday = deadline >= startOfToday && deadline < startOfTomorrow
+            let isPast = deadline < startOfToday
+            if (isToday || isPast) {
+                found = goal
                 break
             }
         }
+        
+        if dueGoal?.id != found?.id {
+            dueGoal = found
+        }
     }
 }
+
+extension Notification.Name {
+    static let userDataTick = Notification.Name("UserDataTick")
+}
+

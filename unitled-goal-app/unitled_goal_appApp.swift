@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftData
 
 @main
 struct UnitledGoalApp: App {
@@ -15,6 +16,7 @@ struct UnitledGoalApp: App {
         WindowGroup {
             ContentView()
                 .environmentObject(userData)
+                .modelContainer(for: Goal.self)
                 .onAppear {
                     NotificationManager.shared.requestAuthorization()
                 }

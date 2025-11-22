@@ -17,7 +17,7 @@ struct GoalCardView: View {
                     Text(goal.title)
                         .font(.headline)
                         .bold()
-                    Text(goal.description)
+                    Text(goal.desc)
                         .font(.subheadline)
                         .foregroundColor(.secondary)
                         .lineLimit(1)

@@ -5,40 +5,46 @@
 //
 
 import SwiftUI
+import SwiftData
 
 struct ReflectionArchive: View {
     @EnvironmentObject var userData: UserData
-
+    @Environment(\.modelContext) var modelContext
+    @Query(sort: \Goal.sortIndex) var goals: [Goal]
+    
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading, spacing: 12) {
-                if userData.goals.isEmpty {
-                    Text(
-                        "No goals yet. Add a goal from Home to start reflecting."
-                    )
-                    .foregroundColor(.secondary)
-                    .padding()
+            ScrollView {
+                VStack(alignment: .leading, spacing: 12) {
+                    if goals.isEmpty {
+                        Text(
+                            "No goals yet. Add a goal from Home to start reflecting."
+                        )
+                        .foregroundColor(.secondary)
+                        .padding()
 
-                } else {
-                    LazyVStack(spacing: 16) {
-                        ForEach(
-                            $userData.goals.filter {
-                                $0.wrappedValue.isCompleted
-                            }
-                        ) { $goal in
-                            NavigationLink {
-                            } label: {
-                                ReflectionCard(goal: goal)
+                    } else {
+                        LazyVStack(spacing: 16) {
+                            ForEach(
+                                goals.filter {
+                                    $0.isCompleted
+                                }
+                            ) { goal in
+                                NavigationLink {
+                                    ReflectionExpandedView(goal: goal)
+                                } label: {
+                                    ReflectionCard(goal: goal)
+                                }
                             }
                         }
                     }
                 }
             }
-            .navigationTitle("Reflection Archive")
+            .navigationTitle("Reflection Journal")
         }
     }
 }
 
 #Preview {
-    ReflectionArchive().environmentObject(UserData(sample: true))
+    ReflectionArchive()
 }

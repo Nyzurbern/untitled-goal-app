@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct ReflectionSheetView: View {
-    @EnvironmentObject var userData: UserData
-    @ObservedObject var ViewModel: GoalViewModel
     @Binding var isShowingReflectionSheet: Bool
+    @State var isFailed: Bool
+    @Bindable var goal: Goal
     let archiveGoal: () -> Void
     
     var body: some View {
@@ -18,10 +18,16 @@ struct ReflectionSheetView: View {
             Form {
                 Section(header: Text("Goal Details")) {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?")
+                        if isFailed {
+                            Text("What challenges prevented me from achieving my goal?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $ViewModel.goal.challenges)
+                        } else {
+                            Text("What challenges or obstacles did I experience? How did I overcome them?")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                        }
+                        TextField("Type here...", text: $goal.challenges)
                             .textInputAutocapitalization(.sentences)
                     }
                     
@@ -29,7 +35,7 @@ struct ReflectionSheetView: View {
                         Text("What specific actions or habits contributed most to my progress?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $ViewModel.goal.actionsorhabits)
+                        TextField("Type here...", text: $goal.actionsorhabits)
                             .textInputAutocapitalization(.sentences)
                     }
                     
@@ -37,7 +43,7 @@ struct ReflectionSheetView: View {
                         Text("What resources or support were most helpful?")
                             .font(.caption)
                             .foregroundColor(.secondary)
-                        TextField("Type here...", text: $ViewModel.goal.resourcesorsupport)
+                        TextField("Type here...", text: $goal.resourcesorsupport)
                             .textInputAutocapitalization(.sentences)
                     }
                 }
