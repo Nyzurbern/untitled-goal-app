@@ -50,17 +50,21 @@ struct ExtendDueDateView: View {
     }
 
     private func save() {
-        // Update the view model
-        ViewModel.goal.deadline = newDate
-
-        // Persist back to the source of truth in UserData
         if let index = userData.goals.firstIndex(where: {
             $0.id == ViewModel.goal.id
         }) {
-            userData.goals[index] = ViewModel.goal
+            var updatedGoal = userData.goals[index]
+            
+            updatedGoal.deadline = newDate
+            
+            userData.goals[index] = updatedGoal
+            
+            ViewModel.goal = updatedGoal
+            
+            userData.dueGoal = nil
+            NotificationManager.shared.scheduleGoalNotifications(for: updatedGoal)
         }
 
-        // Close just this sheet
         dismiss()
     }
 }
