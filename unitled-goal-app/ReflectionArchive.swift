@@ -1,4 +1,3 @@
-//
 //  ReflectionView.swift
 //  SomeGoalsApp
 //
@@ -9,7 +8,7 @@ import SwiftUI
 
 struct ReflectionArchive: View {
     @EnvironmentObject var userData: UserData
-    
+
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
@@ -18,33 +17,48 @@ struct ReflectionArchive: View {
                     .bold()
                     .padding(.horizontal)
                     .padding(.top)
-                
+
                 if userData.goals.isEmpty {
-                    Text("No goals yet. Add a goal from Home to start reflecting.")
-                        .foregroundColor(.secondary)
-                        .padding()
+                    Text(
+                        "No goals yet. Add a goal from Home to start reflecting."
+                    )
+                    .foregroundColor(.secondary)
+                    .padding()
                     Spacer()
                 } else {
                     List(userData.goals) { goal in
                         VStack(alignment: .leading) {
-                            Text(goal.title)
-                                .font(.subheadline)
-                                .bold()
-                            Text("What specific actions or habits contributed most to my progress?")
-                                .font(.caption)
-                            Text(goal.actionsorhabits)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Text("What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?")
-                                .font(.caption)
-                            Text(goal.challenges)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
-                            Text("What resources or support were most helpful?")
-                                .font(.caption)
-                            Text(goal.resourcesorsupport)
-                                .font(.subheadline)
-                                .foregroundColor(.secondary)
+                            ZStack {
+                                RoundedRectangle(cornerRadius: 25.0, style: .continuous)
+                                    .fill(Color(white: 0.3, opacity: 0.90))
+                                VStack {
+                                    Text(goal.title)
+                                        .font(.subheadline)
+                                        .bold()
+                                    Text(
+                                        "What specific actions or habits contributed most to my progress?"
+                                    )
+                                    .font(.caption)
+                                    Text(goal.actionsorhabits)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                    Text(
+                                        "What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?"
+                                    )
+                                    .font(.caption)
+                                    Text(goal.challenges)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                    Text(
+                                        "What resources or support were most helpful?"
+                                    )
+                                    .font(.caption)
+                                    Text(goal.resourcesorsupport)
+                                        .font(.subheadline)
+                                        .foregroundColor(.secondary)
+                                }
+                                
+                            }
                         }
                     }
                 }
