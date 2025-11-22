@@ -43,7 +43,7 @@ struct DueDatePopupView: View {
                 NavigationLink {
                     ExtendDueDateView(ViewModel: ViewModel)
                 } label: {
-                    Text("Let me extend the date papi!")
+                    Text("I need more time!")
                         .padding(.vertical, 10)
                         .padding(.horizontal, 14)
                         .background(
@@ -70,7 +70,7 @@ struct DueDatePopupView: View {
                         .foregroundStyle(.white)
                 }
 
-                .navigationTitle("")
+                .navigationTitle("Goal Status")
             }
         }
 

@@ -5,15 +5,13 @@
 //  Created by Anish Das on 15/11/25.
 //
 
-import Combine
 import Foundation
+import Combine
+import SwiftUI
 
 class GoalViewModel: ObservableObject {
     @Published var goal: Goal
-
-    init(goal: Goal) {
-        self.goal = goal
-    }
+    init(goal: Goal) { self.goal = goal }
 }
 
 struct Subgoal: Identifiable, Hashable, Codable {
@@ -21,6 +19,7 @@ struct Subgoal: Identifiable, Hashable, Codable {
     var title: String
     var isCompleted: Bool = false
     var coinReward: Int = 10
+    var deadline: Date = Date() // Needed for notification scheduling
 }
 
 struct Goal: Identifiable, Hashable, Codable {
@@ -33,6 +32,7 @@ struct Goal: Identifiable, Hashable, Codable {
     var reflections: [String] = []
     var character: Character
     var coins: Int
+    var failed: Bool = false
     var progress: Double {
         guard !subgoals.isEmpty else { return 0.0 }
         let done = subgoals.filter { $0.isCompleted }.count
@@ -54,10 +54,11 @@ struct Character: Identifiable, Hashable, Codable {
     var foodLevel: Int
 }
 
+
 struct Consumable: Identifiable, Hashable, Codable {
     var id = UUID()
     var name: String
-    var dftype: String
+    var dftype: String // e.g., "Food" or "Drink"
     var image: String
     var cost: Int
     var fillAmount: Int

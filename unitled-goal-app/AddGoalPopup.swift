@@ -8,97 +8,57 @@
 import SwiftUI
 
 struct AddGoalPopupView: View {
-    @EnvironmentObject var userData: UserData
     @Environment(\.dismiss) var dismiss
-    
+    @EnvironmentObject var userData: UserData
+
     @State private var title: String = ""
     @State private var description: String = ""
     @State private var GoalDeadline: Date = Date()
-    @State private var reward: Int = 50
-    @State private var image: String = "Male"
-    @State private var profileImage: String = "Male Icon"
-    @State private var CharacterPicked: Int = 0
     @State private var CharacterName: String = ""
-    
-    let characterOptions = [
-        ("Male Icon", "Male"),
-        ("Female Icon", "Female"),
-        ("Female Star Icon", "Female Star")
-    ]
+    @State private var profileImage: String = "Subject 3"
+    @State private var image: String = "subject nobody"
     
     var body: some View {
-        NavigationStack {
-            Form {
-                Section(header: Text("Goal Details")) {
-                    TextField("Title", text: $title)
-                        .textInputAutocapitalization(.sentences)
-                    TextField("Short description", text: $description)
-                        .textInputAutocapitalization(.sentences)
-                    DatePicker("Deadline", selection: $GoalDeadline, displayedComponents: .date)
-                    TextField("Character name", text: $CharacterName)
-                        .textInputAutocapitalization(.sentences)
-                }
+        VStack(spacing: 16) {
+            TextField("Goal Title", text: $title)
+                .textFieldStyle(.roundedBorder)
+            TextField("Description", text: $description)
+                .textFieldStyle(.roundedBorder)
+            DatePicker("Deadline", selection: $GoalDeadline, displayedComponents: [.date])
+            TextField("Character Name", text: $CharacterName)
+                .textFieldStyle(.roundedBorder)
+            
+            Button("Add Goal") {
+                let newGoal = Goal(
+                    title: title.trimmingCharacters(in: .whitespacesAndNewlines),
+                    description: description.trimmingCharacters(in: .whitespacesAndNewlines),
+                    deadline: GoalDeadline,
+                    subgoals: [], // Start empty; user can add subgoals later
+                    reflections: [],
+                    character: Character(
+                        profileImage: profileImage,
+                        image: image,
+                        waterLevel: 30,
+                        foodLevel: 30
+                    ),
+                    coins: 50,
+                    foodprogressbar: 30,
+                    drinksprogressbar: 30,
+                    characterName: CharacterName.trimmingCharacters(in: .whitespacesAndNewlines)
+                )
+
+                // Append goal to UserData
+                userData.goals.append(newGoal)
                 
-                Section(header: Text("Reward")) {
-                    Text("Coin reward: \(reward)")
-                }
+                // Schedule notifications for the goal
+                NotificationManager.shared.scheduleGoalNotifications(for: newGoal)
                 
-                Section(header: Text("Character")) {
-                    ScrollView(.horizontal) {
-                        HStack {
-                            ForEach(Array(characterOptions.enumerated()), id: \.offset) { index, character in
-                                Button {
-                                    profileImage = character.0
-                                    image = character.1
-                                    CharacterPicked = index + 1
-                                } label: {
-                                    Image(character.0)
-                                        .resizable()
-                                        .scaledToFill()
-                                        .frame(width: 80, height: 80)
-                                        .clipShape(Circle())
-                                        .overlay {
-                                            if CharacterPicked == index + 1 {
-                                                Circle().stroke(.blue, lineWidth: 4)
-                                            }
-                                        }
-                                }
-                            }
-                        }
-                    }
-                }
+                // Close the popup
+                dismiss()
             }
-            .navigationTitle("Add Goal")
-            .toolbar {
-                ToolbarItem(placement: .confirmationAction) {
-                    Button("Add") {
-                        let g = Goal(
-                            title: title,
-                            description: description,
-                            deadline: GoalDeadline,
-                            subgoals: [],
-                            reflections: [],
-                            character: Character(
-                                profileImage: profileImage,
-                                image: image,
-                                waterLevel: 30,
-                                foodLevel: 30
-                            ),
-                            coins: reward, // Fixed: use reward instead of hardcoded 10
-                            foodprogressbar: 30,
-                            drinksprogressbar: 30,
-                            characterName: CharacterName
-                        )
-                        userData.goals.append(g)
-                        dismiss()
-                    }
-                    .disabled(title.trimmingCharacters(in: .whitespaces).isEmpty)
-                }
-            }
+            .buttonStyle(.borderedProminent)
+            .padding(.top, 16)
         }
+        .padding()
     }
-}
-#Preview {
-    AddGoalPopupView()
-        .environmentObject(UserData(sample: true))
 }

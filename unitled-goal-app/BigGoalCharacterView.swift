@@ -40,6 +40,7 @@ struct BigGoalCharacterView: View {
                         .background(Color.red.opacity(0.1))
                         .cornerRadius(8)
                     }
+
                     if ViewModel.goal.drinksprogressbar <= 10 {
                         HStack {
                             Image(systemName: "exclamationmark.triangle.fill")
@@ -106,11 +107,11 @@ struct BigGoalCharacterView: View {
                             }
                         }
                     }
-
                     HStack {
                         Text("Due Date: ")
                             .bold()
                             .font(.title)
+                       
                         Text(
                             ViewModel.goal.deadline,
                             format: .dateTime.day().month().year()
@@ -186,8 +187,8 @@ struct BigGoalCharacterView: View {
                                         RoundedRectangle(cornerRadius: 8)
                                     )
                             }
-                            Text("💧")
                         }
+                           
 
                     }
 
@@ -281,33 +282,32 @@ struct BigGoalCharacterView: View {
                                 ViewModel.goal.subgoals.remove(
                                     atOffsets: indexSet
                                 )
+                                        }
+                                    }
+                                    .listStyle(.plain)
+                                    .scrollContentBackground(.hidden)
+                                    .background(Color.clear)
+                                    .frame(
+                                        height: CGFloat(
+                                            ViewModel.goal.subgoals.count
+                                        ) * 70 + 20
+                                    )
+                                }
                             }
                         }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .background(Color.clear)
-                        .frame(
-                            height: CGFloat(ViewModel.goal.subgoals.count) * 70
-                                + 20
-                        )
                     }
                 }
-            }
-        }
+    private func didDismiss() {
+        print("dismissed")
     }
-    private func archiveGoal() {
-        print("Archive button tapped for goal: \(ViewModel.goal.title)")
 
+    private func archiveGoal() {
         ViewModel.goal.isCompleted = true
         if let index = userData.goals.firstIndex(where: {
             $0.id == ViewModel.goal.id
         }) {
             userData.goals[index] = ViewModel.goal
         }
-
         dismiss()
-    }
-    func didDismiss() {
-        print("dismissed")
     }
 }
