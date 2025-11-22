@@ -45,7 +45,7 @@ struct ReflectionCard: View {
             .sheet(isPresented: $clickToSeeMore) {
                 ReflectionExpandedView(goal: goal)
             }
-                .foregroundStyle(.blue)
+    
         }
         .padding()
         .background(RoundedRectangle(cornerRadius: 14).fill(.ultraThinMaterial))
