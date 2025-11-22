@@ -13,13 +13,20 @@ struct BigGoalCharacterView: View {
     @State private var isShowingReflectionSheet = false
     @Environment(\.dismiss) private var dismiss
 
+    // Use a computed property so we don't reference ViewModel before init
+    private var foodProgress: CGFloat {
+        CGFloat(ViewModel.goal.foodprogressbar) / 250.0
+    }
+    
+    private var drinkProgress: CGFloat {
+        CGFloat(ViewModel.goal.drinksprogressbar) / 250.0
+    }
+
     var body: some View {
         ScrollView {
             VStack(spacing: 20) {
                 VStack {
-                    VStack {
-                        Text(ViewModel.goal.title)
-                            .font(.title)
+                    VStack{
                         Text(
                             "Hi! My name is \(ViewModel.goal.characterName)"
                         )
@@ -63,46 +70,72 @@ struct BigGoalCharacterView: View {
                             NavigationLink {
                                 FoodShopView(ViewModel: ViewModel)
                             } label: {
-                                if #available(iOS 26.0, *) {
-                                    Text("🍴")
-                                        .padding()
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 8)
-                                        )
-                                        .glassEffect()
-                                        .font(.system(size: 36))
-                                } else {
-                                    Text("🍴")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 36))
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 8)
-                                        )
+                                ZStack {
+                                    if #available(iOS 26.0, *) {
+                                        Text("🍴")
+                                            .padding()
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                            .glassEffect()
+                                            .font(.system(size: 36))
+                                    } else {
+                                        Text("🍴")
+                                            .padding()
+                                            .background(.blue)
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 36))
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                    }
+                                    Circle()
+                                        .stroke(lineWidth: 5)
+                                        .opacity(0.5)
+                                        .foregroundStyle(.gray)
+                                        .frame(width: 50, height: 50)
+                                    Circle()
+                                        .trim(from: 0.0, to: min(foodProgress, 1.0)) // Trim based on computed progress
+                                        .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
+                                        .foregroundColor(ViewModel.goal.foodprogressbar <= 10
+                                                         ? Color.red : Color.orange)
+                                        .frame(width: 70, height: 70)
                                 }
                             }
                             Spacer()
                             NavigationLink {
                                 DrinksShopView(ViewModel: ViewModel)
                             } label: {
-                                if #available(iOS 26.0, *) {
-                                    Text("🧋")
-                                        .padding()
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 8)
-                                        )
-                                        .glassEffect()
-                                        .font(.system(size: 36))
-                                } else {
-                                    Text("🧋")
-                                        .padding()
-                                        .background(.blue)
-                                        .foregroundStyle(.white)
-                                        .font(.system(size: 36))
-                                        .clipShape(
-                                            RoundedRectangle(cornerRadius: 8)
-                                        )
+                                ZStack {
+                                    if #available(iOS 26.0, *) {
+                                        Text("🧋")
+                                            .padding()
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                            .glassEffect()
+                                            .font(.system(size: 36))
+                                    } else {
+                                        Text("🧋")
+                                            .padding()
+                                            .background(.blue)
+                                            .foregroundStyle(.white)
+                                            .font(.system(size: 36))
+                                            .clipShape(
+                                                RoundedRectangle(cornerRadius: 8)
+                                            )
+                                    }
+                                    Circle()
+                                        .stroke(lineWidth: 5)
+                                        .opacity(0.5)
+                                        .foregroundStyle(.gray)
+                                        .frame(width: 50, height: 50)
+                                    Circle()
+                                        .trim(from: 0.0, to: min(drinkProgress, 1.0)) // Trim based on computed progress
+                                        .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
+                                        .foregroundColor(ViewModel.goal.drinksprogressbar <= 10
+                                                         ? Color.red : Color.blue)
+                                        .frame(width: 70, height: 70)
                                 }
                             }
                         }
@@ -111,7 +144,7 @@ struct BigGoalCharacterView: View {
                         Text("Due Date: ")
                             .bold()
                             .font(.title)
-                       
+                        
                         Text(
                             ViewModel.goal.deadline,
                             format: .dateTime.day().month().year()
@@ -120,86 +153,13 @@ struct BigGoalCharacterView: View {
                         .font(.title)
                     }
                     HStack {
-                        ZStack {
-                            Rectangle()
-                                .frame(width: 250, height: 40)
-                                .foregroundStyle(.background)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8).inset(
-                                        by: 1.5
-                                    )
-                                    .stroke(
-                                        ViewModel.goal.foodprogressbar <= 10
-                                            ? Color.red : Color.orange,
-                                        lineWidth: 3
-                                    )
-                                )
-                            HStack {
-                                Rectangle()
-                                    .frame(
-                                        width: ViewModel.goal
-                                            .foodprogressbar,
-                                        height: 40
-                                    )
-                                    .frame(
-                                        maxWidth: 250,
-                                        alignment: .leading
-                                    )
-                                    .foregroundStyle(
-                                        ViewModel.goal.foodprogressbar <= 10
-                                            ? Color.red : Color.orange
-                                    )
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 8)
-                                    )
-                            }
-                            Text("🍞")
-                        }
-                    }
-
-                    HStack {
-                        ZStack {
-                            Rectangle()
-                                .frame(width: 250, height: 40)
-                                .foregroundStyle(.background)
-                                .overlay(
-                                    RoundedRectangle(cornerRadius: 8).inset(
-                                        by: 1.5
-                                    )
-                                    .stroke(
-                                        ViewModel.goal.drinksprogressbar <= 10
-                                            ? Color.red : Color.blue,
-                                        lineWidth: 3
-                                    )
-                                )
-                            HStack {
-                                Rectangle()
-                                    .frame(
-                                        width: ViewModel.goal.drinksprogressbar,
-                                        height: 40
-                                    )
-                                    .frame(maxWidth: 250, alignment: .leading)
-                                    .foregroundStyle(
-                                        ViewModel.goal.drinksprogressbar <= 10
-                                            ? Color.red : Color.blue
-                                    )
-                                    .clipShape(
-                                        RoundedRectangle(cornerRadius: 8)
-                                    )
-                            }
-                        }
-                           
-
-                    }
-
-                    HStack {
                         Text(
-                            "Food: \(Int(ViewModel.goal.foodprogressbar))%/250"
+                            "Food: \(Int(ViewModel.goal.foodprogressbar))/250"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
                         Text(
-                            "Water: \(Int(ViewModel.goal.drinksprogressbar))%/250"
+                            "Water: \(Int(ViewModel.goal.drinksprogressbar))/250"
                         )
                         .font(.caption)
                         .foregroundColor(.secondary)
@@ -242,21 +202,21 @@ struct BigGoalCharacterView: View {
                                             .toggle()
                                         if subgoal.isCompleted.wrappedValue {
                                             ViewModel.goal.coins +=
-                                                subgoal.coinReward.wrappedValue
+                                            subgoal.coinReward.wrappedValue
                                         } else {
                                             ViewModel.goal.coins -=
-                                                subgoal.coinReward.wrappedValue
+                                            subgoal.coinReward.wrappedValue
                                         }
                                     } label: {
                                         Image(
                                             systemName: subgoal.isCompleted
                                                 .wrappedValue
-                                                ? "checkmark.circle.fill"
-                                                : "circle"
+                                            ? "checkmark.circle.fill"
+                                            : "circle"
                                         )
                                         .foregroundColor(
                                             subgoal.isCompleted.wrappedValue
-                                                ? .green : .primary
+                                            ? .green : .primary
                                         )
                                         .font(.title2)
                                     }
@@ -282,21 +242,22 @@ struct BigGoalCharacterView: View {
                                 ViewModel.goal.subgoals.remove(
                                     atOffsets: indexSet
                                 )
-                                        }
-                                    }
-                                    .listStyle(.plain)
-                                    .scrollContentBackground(.hidden)
-                                    .background(Color.clear)
-                                    .frame(
-                                        height: CGFloat(
-                                            ViewModel.goal.subgoals.count
-                                        ) * 70 + 20
-                                    )
-                                }
                             }
                         }
+                        .listStyle(.plain)
+                        .scrollContentBackground(.hidden)
+                        .background(Color.clear)
+                        .frame(
+                            height: CGFloat(
+                                ViewModel.goal.subgoals.count
+                            ) * 70 + 20
+                        )
                     }
                 }
+            }
+        }
+        .navigationTitle(ViewModel.goal.title)
+    }
     private func didDismiss() {
         print("dismissed")
     }
