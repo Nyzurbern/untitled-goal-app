@@ -20,7 +20,6 @@ struct HomeView: View {
     var body: some View {
         NavigationStack {
             VStack(alignment: .leading, spacing: 12) {
-                // Header + summary
                 HStack {
                     VStack(alignment: .leading, spacing: 6) {
                         Text("My Goals")
@@ -31,8 +30,6 @@ struct HomeView: View {
                 }
                 .padding(.horizontal)
                 .padding(.top)
-
-                // actions
                 HStack(spacing: 12) {
                     Button {
                         showAddGoal = true
@@ -76,7 +73,6 @@ struct HomeView: View {
                 AddGoalPopupView()
                     .environmentObject(userData)
             }
-            // Present due/completed goal popup
             .sheet(item: $userData.dueGoal) { due in
                 DueDatePopupView(ViewModel: GoalViewModel(goal: due))
                     .environmentObject(userData)
