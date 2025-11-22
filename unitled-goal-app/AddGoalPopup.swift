@@ -70,7 +70,7 @@ struct AddGoalPopupView: View {
                                             if CharacterPicked == index + 1 {
                                                 Circle().stroke(.blue, lineWidth: 4)
                                             }
-                                        }
+                                    }
                                 }
                             }
                         }
@@ -106,10 +106,7 @@ struct AddGoalPopupView: View {
                     .disabled(!allRequiredFieldsFilled)
                 }
             }
-            .buttonStyle(.borderedProminent)
-            .padding(.top, 16)
         }
-        .padding()
     }
 }
 
