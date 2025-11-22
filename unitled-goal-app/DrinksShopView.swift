@@ -31,13 +31,34 @@ struct DrinksShopView: View {
             fillAmount: 50
         ),
         Consumable(
+            name: "Sodaaaaaa",
+            dftype: "Drink",
+            image: "soda",
+            cost: 25,
+            fillAmount: 60
+        ),
+        Consumable(
             name: "NRG Drink",
             dftype: "Drink",
             image: "NRG Drink",
             cost: 30,
             fillAmount: 70
         ),
-        Consumable(name: "Frappuccino", dftype: "Drink", image: "Frappuccino", cost: 40, fillAmount: 90)
+        Consumable(
+            name: "Boba",
+            dftype: "Drink",
+            image: "soda",
+            cost: 40,
+            fillAmount: 90
+        ),
+        Consumable(
+            name: "MILK~!",
+            dftype: "Drink",
+            image: "milk",
+            cost: 45,
+            fillAmount: 100
+        ),
+        Consumable(name: "Frappuccino", dftype: "Drink", image: "Frappuccino", cost: 50, fillAmount: 110)
     ]
 
     var body: some View {
