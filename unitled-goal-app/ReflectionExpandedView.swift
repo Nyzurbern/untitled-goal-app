@@ -14,12 +14,28 @@ struct ReflectionExpandedView: View {
         VStack {
             Text(goal.title)
                 .font(.title)
+                .bold()
+                .padding()
+            
             Text("What specific actions or habits contributed most to my progress?")
                 .font(.title2)
             Divider()
                 .frame(maxWidth: 300)
             Text(goal.actionsorhabits)
+            Text("What challenges or obstacles did I experience? How did I overcome them, or what prevented me from doing so?")
+                .font(.title2)
+                .frame(maxWidth:315)
+            Divider()
+                .frame(maxWidth: 300)
+            Text(goal.challenges)
+            Text("What resources or support were most helpful?")
+                .font(.title2)
+                .frame(maxWidth:315)
+            Divider()
+                .frame(maxWidth: 300)
+            Text(goal.resourcesorsupport)
         }
+        .frame(width: 350)
     }
 }
 
