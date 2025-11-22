@@ -47,7 +47,7 @@ struct DrinksShopView: View {
         Consumable(
             name: "Boba",
             dftype: "Drink",
-            image: "soda",
+            image: "boba",
             cost: 40,
             fillAmount: 90
         ),
@@ -58,7 +58,7 @@ struct DrinksShopView: View {
             cost: 45,
             fillAmount: 100
         ),
-        Consumable(name: "Frappuccino", dftype: "Drink", image: "Frappuccino", cost: 50, fillAmount: 110)
+        Consumable(name: "Frappuccino", dftype: "Drink", image: "frappuccino", cost: 50, fillAmount: 110)
     ]
 
     var body: some View {
