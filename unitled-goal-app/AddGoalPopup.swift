@@ -24,8 +24,6 @@ struct AddGoalPopupView: View {
     @State private var image: String = ""
     @State private var profileImage: String = ""
     @State private var CharacterPicked: Int = 0
-    
-    // True only when all required fields are non-empty after trimming
     private var allRequiredFieldsFilled: Bool {
         !title.isTrimmedEmpty &&
         !description.isTrimmedEmpty &&

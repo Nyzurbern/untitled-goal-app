@@ -19,35 +19,34 @@ struct HomeView: View {
 
     var body: some View {
         NavigationStack {
+
             VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    VStack(alignment: .leading, spacing: 6) {
-                        Text("My Goals")
-                            .font(.largeTitle)
-                            .bold()
-                    }
-                    Spacer()
-                }
-                .padding(.horizontal)
-                .padding(.top)
                 HStack(spacing: 12) {
+
+                    Text("My goals")
+                        .font(.largeTitle)
+                        .bold()
+                    Spacer()
                     Button {
                         showAddGoal = true
                     } label: {
-                        Label("Add Goal", systemImage: "plus.circle.fill")
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10).fill(
-                                    Color.blue
-                                )
+                        Image(
+                            systemName: "plus.circle.fill"
+                        )
+                        .padding(.vertical, 10)
+                        .padding(.horizontal, 14)
+                        .background(
+                            RoundedRectangle(cornerRadius: 10).fill(
+                                Color.blue
                             )
-                            .foregroundStyle(.white)
+                        )
+                        .foregroundStyle(.white)
                     }
 
-                    Spacer()
                 }
                 .padding(.horizontal)
+                .padding(.top)
+
                 ScrollView {
                     LazyVStack(spacing: 16) {
                         ForEach(
@@ -57,7 +56,7 @@ struct HomeView: View {
                         ) { $goal in
                             NavigationLink {
                                 BigGoalCharacterView(
-                                    ViewModel: GoalViewModel(goal: goal),
+                                    ViewModel: GoalViewModel(goal: goal)
                                 )
                             } label: {
                                 GoalCardView(goal: goal)
@@ -81,4 +80,3 @@ struct HomeView: View {
         }
     }
 }
-
