@@ -178,12 +178,17 @@ struct BigGoalCharacterView: View {
                         NavigationLink {
                             AddSubGoalPopupView(ViewModel: ViewModel)
                         } label: {
-                            Text("Add Subgoal")
-                                .padding(.horizontal, 16)
-                                .padding(.vertical, 8)
-                                .background(Color.blue)
-                                .foregroundColor(.white)
-                                .cornerRadius(8)
+                            Image(
+                                systemName: "plus.circle.fill"
+                            )
+                            .padding(.vertical, 10)
+                            .padding(.horizontal, 14)
+                            .background(
+                                RoundedRectangle(cornerRadius: 10).fill(
+                                    Color.blue
+                                )
+                            )
+                            .foregroundStyle(.white)
                         }
                     }
                     .padding(.horizontal)
