@@ -15,8 +15,10 @@ struct AddSubGoalPopupView: View {
     @State private var SubGoalDeadline = Date()
     @Query var goals: [Goal]
     @Bindable var goal: Goal
-    
     var body: some View {
+        let maxDate: Date = Calendar.current.date(byAdding: .day, value: 1, to: goal.deadline) ?? goal.deadline
+        let dateRange: ClosedRange<Date> = Date.now...maxDate
+
         NavigationStack {
             Form {
                 if goals.isEmpty {
@@ -25,7 +27,7 @@ struct AddSubGoalPopupView: View {
                     Section {
                         TextField("Title", text: $title)
                         Text("Reward: \(reward) coins")
-                        DatePicker("Deadline", selection: $SubGoalDeadline, displayedComponents: .date)
+                        DatePicker("Deadline", selection: $SubGoalDeadline, in: dateRange, displayedComponents: .date)
                     }
                 }
             }
@@ -34,7 +36,7 @@ struct AddSubGoalPopupView: View {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         guard !goals.isEmpty else { return }
-                        let s = Subgoal(title: title, coinReward: reward, deadline: SubGoalDeadline)
+                        let s = Subgoal(title: title, isCompleted: false, coinReward: reward, deadline: SubGoalDeadline)
                         goal.subgoals.append(s)
                         NotificationManager.shared.scheduleGoalNotifications(for: goal)
                         dismiss()

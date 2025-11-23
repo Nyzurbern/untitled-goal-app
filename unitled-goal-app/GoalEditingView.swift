@@ -17,14 +17,13 @@ struct GoalEditingView: View {
         ("Female Star Icon", "Female Star")
     ]
     
-    // Initialize CharacterPicked based on the goal's current character
     init(goal: Goal) {
         self._goal = Bindable(wrappedValue: goal)
-        // Find the index whose image matches the goal's current character image
+ 
         let index = characterOptions.firstIndex { option in
             option.1 == goal.character.image
         } ?? -1
-        // Use index + 1 to match your selection logic, or 0 if not found
+    
         self._CharacterPicked = State(initialValue: index >= 0 ? index + 1 : 0)
     }
     
@@ -39,6 +38,7 @@ struct GoalEditingView: View {
                     TextField("Short description", text: $goal.desc)
                         .textInputAutocapitalization(.sentences)
                 }
+                //change this part
                 Section(header: Text("Deadline")) {
                     DatePicker("Deadline", selection: $goal.deadline, displayedComponents: .date)
                 }

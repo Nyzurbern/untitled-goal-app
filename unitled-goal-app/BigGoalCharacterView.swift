@@ -14,7 +14,6 @@ struct BigGoalCharacterView: View {
     @Bindable var goal: Goal
     @State private var selectedSubgoalID: Subgoal.ID?
     
-    // Use a computed property so we don't reference ViewModel before init
     private var foodProgress: CGFloat {
         CGFloat(goal.foodprogressbar) / 250.0
     }
@@ -25,252 +24,11 @@ struct BigGoalCharacterView: View {
     
     var body: some View {
         ScrollView {
-            VStack(spacing: 20) {
-                VStack {
-                    VStack{
-                        Text(
-                            "Hi! My name is \(goal.characterName)"
-                        )
-                        .font(.title)
-                        
-                        Spacer()
-                    }
-                    
-                    if goal.foodprogressbar <= 10 {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.red)
-                            Text("Your character is hungry!")
-                                .font(.caption)
-                                .bold()
-                        }
-                        .padding(8)
-                        .background(Color.red.opacity(0.1))
-                        .cornerRadius(8)
-                    }
-                    
-                    if goal.drinksprogressbar <= 10 {
-                        HStack {
-                            Image(systemName: "exclamationmark.triangle.fill")
-                                .foregroundColor(.red)
-                            Text("Your character is thirsty!")
-                                .font(.caption)
-                                .bold()
-                        }
-                        .padding(8)
-                        .background(Color.red.opacity(0.1))
-                        .cornerRadius(8)
-                    }
-                    
-                    ZStack {
-                        Image(goal.character.image)
-                            .resizable()
-                            .scaledToFit()
-                            .frame(maxWidth: 350, maxHeight: 350)
-                        HStack {
-                            NavigationLink {
-                                FoodShopView(goal: goal)
-                            } label: {
-                                ZStack {
-                                    if #available(iOS 26.0, *) {
-                                        Text("🍴")
-                                            .padding()
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 8)
-                                            )
-                                            .glassEffect()
-                                            .font(.system(size: 36))
-                                    } else {
-                                        Text("🍴")
-                                            .padding()
-                                            .background(.blue)
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 36))
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 8)
-                                            )
-                                    }
-                                    Circle()
-                                        .stroke(lineWidth: 5)
-                                        .opacity(0.5)
-                                        .foregroundStyle(.gray)
-                                        .frame(width: 50, height: 50)
-                                    Circle()
-                                        .trim(from: 0.0, to: min(foodProgress, 1.0)) // Trim based on computed progress
-                                        .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
-                                        .foregroundColor(goal.foodprogressbar <= 10
-                                                         ? Color.red : Color.orange)
-                                        .frame(width: 70, height: 70)
-                                }
-                            }
-                            Spacer()
-                            NavigationLink {
-                                DrinksShopView(goal: goal)
-                            } label: {
-                                ZStack {
-                                    if #available(iOS 26.0, *) {
-                                        Text("🧋")
-                                            .padding()
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 8)
-                                            )
-                                            .glassEffect()
-                                            .font(.system(size: 36))
-                                    } else {
-                                        Text("🧋")
-                                            .padding()
-                                            .background(.blue)
-                                            .foregroundStyle(.white)
-                                            .font(.system(size: 36))
-                                            .clipShape(
-                                                RoundedRectangle(cornerRadius: 8)
-                                            )
-                                    }
-                                    Circle()
-                                        .stroke(lineWidth: 5)
-                                        .opacity(0.5)
-                                        .foregroundStyle(.gray)
-                                        .frame(width: 50, height: 50)
-                                    Circle()
-                                        .trim(from: 0.0, to: min(drinkProgress, 1.0)) // Trim based on computed progress
-                                        .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round)) // Style the line
-                                        .foregroundColor(goal.drinksprogressbar <= 10
-                                                         ? Color.red : Color.blue)
-                                        .frame(width: 70, height: 70)
-                                }
-                            }
-                        }
-                    }
-                    HStack {
-                        Text("Due Date: ")
-                            .bold()
-                            .font(.title)
-                        
-                        Text(
-                            goal.deadline,
-                            format: .dateTime.day().month().year()
-                        )
-                        .bold()
-                        .font(.title)
-                    }
-                    HStack {
-                        Text(
-                            "Food: \(Int(goal.foodprogressbar))/250"
-                        )
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                        Text(
-                            "Water: \(Int(goal.drinksprogressbar))/250"
-                        )
-                        .font(.caption)
-                        .foregroundColor(.secondary)
-                    }
-                }
-                .padding()
-                .background(Color.gray.opacity(0.06))
-                .cornerRadius(12)
-                
-                VStack(alignment: .leading, spacing: 16) {
-                    HStack {
-                        Text("Sub-goals")
-                            .font(.title2.bold())
-                        Spacer()
-                        
-                        NavigationLink {
-                            AddSubGoalPopupView(goal: goal)
-                        } label: {
-                            Image(
-                                systemName: "plus.circle.fill"
-                            )
-                            .padding(.vertical, 10)
-                            .padding(.horizontal, 14)
-                            .background(
-                                RoundedRectangle(cornerRadius: 10).fill(
-                                    Color.blue
-                                )
-                            )
-                            .foregroundStyle(.white)
-                        }
-                    }
-                    .padding(.horizontal)
-                    
-                    if goal.subgoals.isEmpty {
-                        Text("No subgoals yet. Add one to get started!")
-                            .foregroundColor(.secondary)
-                            .frame(maxWidth: .infinity, alignment: .center)
-                            .padding()
-                    } else {
-                        List {
-                            ForEach($goal.subgoals) { subgoal in
-                                HStack {
-                                    Button {
-                                        subgoal.isCompleted.wrappedValue
-                                            .toggle()
-                                        if subgoal.isCompleted.wrappedValue {
-                                            goal.coins +=
-                                            subgoal.coinReward.wrappedValue
-                                        } else {
-                                            goal.coins -=
-                                            subgoal.coinReward.wrappedValue
-                                        }
-                                    }
-                                    .swipeActions(edge: .trailing) {
-                                        Button(role: .destructive) {
-                                                if let index = goal.subgoals.firstIndex(where: { $0.id == subgoal.id }) {
-                                                    goal.subgoals.remove(at: index)
-                                                }
-                                            } label: {
-                                                Label("Delete", systemImage: "trash")
-                                            }
-                                        Button{
-                                            selectedSubgoalID = subgoal.id.wrappedValue
-                                        } label: {
-                                            Label("Edit", systemImage: "pencil")
-                                        }
-                                    }
-                                    label: {
-                                        Image(
-                                            systemName: subgoal.isCompleted
-                                                .wrappedValue
-                                            ? "checkmark.circle.fill"
-                                            : "circle"
-                                        )
-                                        .foregroundColor(
-                                            subgoal.isCompleted.wrappedValue
-                                            ? .green : .primary
-                                        )
-                                        .font(.title2)
-                                    }
-                                    
-                                    TextField("Sub-goal", text: subgoal.title)
-                                        .font(.body)
-                                    
-                                    Spacer()
-                                    
-                                    Text(
-                                        "+\(subgoal.coinReward.wrappedValue) coins"
-                                    )
-                                    .font(.caption)
-                                    .foregroundColor(.yellow)
-                                    .padding(.horizontal, 8)
-                                    .padding(.vertical, 4)
-                                    .background(Color.yellow.opacity(0.2))
-                                    .cornerRadius(4)
-                                }
-                                .padding(.vertical, 4)
-                            }
-                        }
-                        .listStyle(.plain)
-                        .scrollContentBackground(.hidden)
-                        .background(Color.clear)
-                        .frame(
-                            height: CGFloat(
-                                goal.subgoals.count
-                            ) * 70 + 20
-                        )
-                    }
-                }
+            VStack(spacing: 24) {
+                characterHeaderSection
+                subgoalsSection
             }
+            .padding(.horizontal)
         }
         .navigationTitle(goal.title)
         .sheet(isPresented: Binding(
@@ -279,24 +37,299 @@ struct BigGoalCharacterView: View {
         )) {
             if let subgoalID = selectedSubgoalID,
                let index = goal.subgoals.firstIndex(where: { $0.id == subgoalID }) {
-                SubGoalEditingView(subgoal: $goal.subgoals[index])
+                SubGoalEditingView(subgoal: $goal.subgoals[index], goal: goal)
             } else {
                 Text("Subgoal not found")
             }
         }
     }
-    private func didDismiss() {
-        print("dismissed")
+    
+    private var characterHeaderSection: some View {
+        VStack(spacing: 16) {
+       
+            HStack(alignment: .top) {
+                VStack(alignment: .leading, spacing: 4) {
+                    Text("Meet")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    Text(goal.characterName)
+                        .font(.title2.bold())
+                }
+                
+                Spacer()
+                
+                VStack(alignment: .trailing, spacing: 4) {
+                    Text("Due Date")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                    Text(goal.deadline, style: .date)
+                        .font(.title3.bold())
+                        .foregroundColor(.primary)
+                }
+            }
+            
+            ZStack {
+                Image(goal.character.image)
+                    .resizable()
+                    .scaledToFit()
+                    .frame(maxWidth: 300, maxHeight: 300)
+                    .overlay(warningOverlay)
+                
+                HStack {
+                    foodButton
+                    Spacer()
+                    drinkButton
+                }
+                .padding(.horizontal, 20)
+            }
+        }
+        .padding()
+        .background(Color.gray.opacity(0.06))
+        .cornerRadius(16)
     }
     
-    //    private func archiveGoal() {
-    //        goal.isCompleted = true
-    //        if let index = userData.goals.firstIndex(where: {
-    //            $0.id == goal.id
-    //        }) {
-    //            userData.goals[index] = goal
-    //        }
-    //        dismiss()
-    //    }
+    private var warningOverlay: some View {
+        Group {
+            if goal.foodprogressbar <= 10 || goal.drinksprogressbar <= 10 {
+                VStack {
+                    HStack(spacing: 8) {
+                        if goal.foodprogressbar <= 10 {
+                            WarningBadge(text: "Hungry", color: .red)
+                        }
+                        if goal.drinksprogressbar <= 10 {
+                            WarningBadge(text: "Thirsty", color: .red)
+                        }
+                    }
+                    Spacer()
+                }
+                .padding(8)
+            }
+        }
+    }
+    
+    private var foodButton: some View {
+        NavigationLink {
+            FoodShopView(goal: goal)
+        } label: {
+            ProgressCircleButton(
+                emoji: "🍴",
+                progress: foodProgress,
+                color: goal.foodprogressbar <= 10 ? .red : .orange
+            )
+        }
+    }
+    
+    private var drinkButton: some View {
+        NavigationLink {
+            DrinksShopView(goal: goal)
+        } label: {
+            ProgressCircleButton(
+                emoji: "🧋",
+                progress: drinkProgress,
+                color: goal.drinksprogressbar <= 10 ? .red : .blue
+            )
+        }
+    }
+    
+    private var subgoalsSection: some View {
+        VStack(alignment: .leading, spacing: 16) {
+            subgoalsHeader
+            
+            if goal.subgoals.isEmpty {
+                emptySubgoalsMessage
+            } else {
+                subgoalsList
+            }
+        }
+    }
+    
+    private var subgoalsHeader: some View {
+        HStack {
+            Text("Sub-goals")
+                .font(.title2.bold())
+            Spacer()
+            
+            NavigationLink {
+                AddSubGoalPopupView(goal: goal)
+            } label: {
+                Image(systemName: "plus.circle.fill")
+                    .padding(.vertical, 10)
+                    .padding(.horizontal, 14)
+                    .background(
+                        RoundedRectangle(cornerRadius: 10).fill(Color.blue)
+                    )
+                    .foregroundStyle(.white)
+            }
+        }
+    }
+    
+    private var emptySubgoalsMessage: some View {
+        Text("No subgoals yet. Add one to get started!")
+            .foregroundColor(.secondary)
+            .frame(maxWidth: .infinity, alignment: .center)
+            .padding()
+    }
+    
+    private var subgoalsList: some View {
+        List {
+            ForEach($goal.subgoals) { subgoal in
+                SubgoalRow(subgoal: subgoal, goal: goal, selectedSubgoalID: $selectedSubgoalID)
+            }
+        }
+        .listStyle(.plain)
+        .scrollContentBackground(.hidden)
+        .background(Color.clear)
+        .frame(height: CGFloat(goal.subgoals.count) * 70 + 20)
+    }
 }
 
+struct ProgressPill: View {
+    let icon: String
+    let value: Int
+    let max: Int
+    let color: Color
+    
+    private var progress: Double {
+        Double(value) / Double(max)
+    }
+    
+    var body: some View {
+        HStack(spacing: 8) {
+            Text(icon)
+                .font(.system(size: 16))
+            
+            Text("\(value)/\(max)")
+                .font(.caption)
+                .bold()
+                .monospacedDigit()
+            
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    Rectangle()
+                        .frame(width: geometry.size.width, height: 4)
+                        .opacity(0.3)
+                        .foregroundColor(color)
+                    
+                    Rectangle()
+                        .frame(width: min(CGFloat(progress) * geometry.size.width, geometry.size.width), height: 4)
+                        .foregroundColor(color)
+                }
+                .cornerRadius(2)
+            }
+            .frame(width: 40, height: 4)
+        }
+        .padding(.horizontal, 12)
+        .padding(.vertical, 8)
+        .background(color.opacity(0.1))
+        .cornerRadius(20)
+    }
+}
+
+struct WarningBadge: View {
+    let text: String
+    let color: Color
+    
+    var body: some View {
+        HStack(spacing: 4) {
+            Image(systemName: "exclamationmark.triangle.fill")
+                .font(.caption2)
+            Text(text)
+                .font(.caption2)
+                .bold()
+        }
+        .padding(.horizontal, 8)
+        .padding(.vertical, 4)
+        .background(color.opacity(0.9))
+        .foregroundColor(.white)
+        .cornerRadius(6)
+    }
+}
+
+struct ProgressCircleButton: View {
+    let emoji: String
+    let progress: CGFloat
+    let color: Color
+    
+    var body: some View {
+        ZStack {
+            if #available(iOS 26.0, *) {
+                Text(emoji)
+                    .padding()
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+                    .glassEffect()
+                    .font(.system(size: 36))
+            } else {
+                Text(emoji)
+                    .padding()
+                    .background(.blue)
+                    .foregroundStyle(.white)
+                    .font(.system(size: 36))
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
+            }
+            
+            Circle()
+                .stroke(lineWidth: 5)
+                .opacity(0.5)
+                .foregroundStyle(.gray)
+                .frame(width: 50, height: 50)
+            
+            Circle()
+                .trim(from: 0.0, to: min(progress, 1.0))
+                .stroke(style: StrokeStyle(lineWidth: 5, lineCap: .round, lineJoin: .round))
+                .foregroundColor(color)
+                .frame(width: 70, height: 70)
+        }
+    }
+}
+
+struct SubgoalRow: View {
+    @Binding var subgoal: Subgoal
+    let goal: Goal
+    @Binding var selectedSubgoalID: Subgoal.ID?
+    
+    var body: some View {
+        HStack {
+            Button {
+                subgoal.isCompleted.toggle()
+                if subgoal.isCompleted {
+                    goal.coins += subgoal.coinReward
+                } else {
+                    goal.coins -= subgoal.coinReward
+                }
+            } label: {
+                Image(systemName: subgoal.isCompleted ? "checkmark.circle.fill" : "circle")
+                    .foregroundColor(subgoal.isCompleted ? .green : .primary)
+                    .font(.title2)
+            }
+            
+            TextField("Sub-goal", text: $subgoal.title)
+                .font(.body)
+            
+            Spacer()
+            
+            Text("+\(subgoal.coinReward) coins")
+                .font(.caption)
+                .foregroundColor(.yellow)
+                .padding(.horizontal, 8)
+                .padding(.vertical, 4)
+                .background(Color.yellow.opacity(0.2))
+                .cornerRadius(4)
+        }
+        .padding(.vertical, 4)
+        .swipeActions(edge: .trailing) {
+            Button(role: .destructive) {
+                if let index = goal.subgoals.firstIndex(where: { $0.id == subgoal.id }) {
+                    goal.subgoals.remove(at: index)
+                }
+            } label: {
+                Label("Delete", systemImage: "trash")
+            }
+            
+            Button {
+                selectedSubgoalID = subgoal.id
+            } label: {
+                Label("Edit", systemImage: "pencil")
+            }
+        }
+    }
+}
