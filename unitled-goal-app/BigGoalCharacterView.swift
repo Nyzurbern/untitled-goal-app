@@ -14,7 +14,6 @@ struct BigGoalCharacterView: View {
     @Environment(\.dismiss) private var dismiss
     @Bindable var goal: Goal
     @State private var selectedSubgoalID: Subgoal.ID?
-    
 
     private var foodProgress: CGFloat {
         CGFloat(goal.foodprogressbar) / 250.0
@@ -22,6 +21,20 @@ struct BigGoalCharacterView: View {
 
     private var drinkProgress: CGFloat {
         CGFloat(goal.drinksprogressbar) / 250.0
+    }
+
+    // Derived progress toward revival
+    private var completedCount: Int {
+        goal.subgoals.filter { $0.isCompleted }.count
+    }
+
+    private var remainingNeeded: Int {
+        max(0, 5 - completedCount)
+    }
+
+    // Dead only if both bars are exactly 0
+    private var isDehydratedAndStarving: Bool {
+        goal.foodprogressbar <= 0 && goal.drinksprogressbar <= 0
     }
 
     var body: some View {
@@ -40,13 +53,18 @@ struct BigGoalCharacterView: View {
             )
         ) {
             if let subgoalID = selectedSubgoalID,
-                let index = goal.subgoals.firstIndex(where: {
-                    $0.id == subgoalID
-                })
-            {
+               let index = goal.subgoals.firstIndex(where: { $0.id == subgoalID }) {
                 SubGoalEditingView(subgoal: $goal.subgoals[index], goal: goal)
             } else {
                 Text("Subgoal not found")
+            }
+        }
+        // Reset bars to 30 only when character is revived (remainingNeeded crosses to 0)
+        // and only if the character was actually dead (both bars were 0).
+        .onChange(of: remainingNeeded) { oldValue, newValue in
+            if oldValue > 0, newValue == 0, isDehydratedAndStarving {
+                goal.foodprogressbar = 30
+                goal.drinksprogressbar = 30
             }
         }
     }
@@ -74,9 +92,7 @@ struct BigGoalCharacterView: View {
                         .foregroundColor(.primary)
                 }
             }
-            if goal.drinksprogressbar == 0
-                && goal.foodprogressbar == 0
-            {
+            if remainingNeeded == 0 || !isDehydratedAndStarving {
                 ZStack {
                     Image(goal.character.image)
                         .resizable()
@@ -94,15 +110,20 @@ struct BigGoalCharacterView: View {
             } else {
                 if goal.character.profileImage == "Male Icon" {
                     Text("☠️")
-                        .font(.system(size: 350))//ZI QI YOU CHANGE THIS PART TO THE DEAD DUDE PICTURE OKAY???
+                        .font(.system(size: 350))  // Replace with dead male image if available
                 } else if goal.character.profileImage == "Female Icon" {
-                    Text("☠️") //ZI QI YOU CHANGE THIS PART TO THE DEAD GIRL PICTURE OKAY???
+                    Text("☠️")  // Replace with dead female image if available
                 } else if goal.character.profileImage == "Female Star Icon" {
-                    Text("☠️") //ZI QI YOU CHANGE THIS PART TO THE DEAD GIRL⭐️ PICTURE OKAY???
+                    Text("☠️")  // Replace with dead female⭐️ image if available
                 }
                 Spacer()
-                Text("Complete some subgoals to revive your character!")
-                    .font(.largeTitle)
+                VStack(spacing: 8) {
+                    Text("Complete some subgoals to revive your character!")
+                        .font(.title2.weight(.semibold))
+                    Text("\(remainingNeeded) more to go")
+                        .font(.headline)
+                        .foregroundColor(.secondary)
+                }
             }
         }
         .padding()
@@ -319,6 +340,7 @@ struct ProgressCircleButton: View {
         }
     }
 }
+
 struct SubgoalRow: View {
     @Binding var subgoal: Subgoal
     let goal: Goal
@@ -327,23 +349,26 @@ struct SubgoalRow: View {
     var body: some View {
         HStack {
             Button {
-                withAnimation(.interactiveSpring(response: 0.4, dampingFraction: 0.6)) {
+                withAnimation(
+                    .interactiveSpring(response: 0.4, dampingFraction: 0.6)
+                ) {
                     subgoal.isCompleted.toggle()
                     if subgoal.isCompleted {
                         goal.coins += subgoal.coinReward
-                        
                     } else {
                         goal.coins -= subgoal.coinReward
                     }
                 }
             } label: {
-                Image(systemName: subgoal.isCompleted ? "checkmark.circle.fill" : "circle")
-                    .foregroundColor(subgoal.isCompleted ? .green : .primary)
-                    .font(.title2)
-                    .scaleEffect(subgoal.isCompleted ? 1.1 : 1.0)
-                    .rotationEffect(.degrees(subgoal.isCompleted ? 360 : 0))
+                Image(
+                    systemName: subgoal.isCompleted
+                    ? "checkmark.circle.fill" : "circle"
+                )
+                .foregroundColor(subgoal.isCompleted ? .green : .primary)
+                .font(.title2)
+                .scaleEffect(subgoal.isCompleted ? 1.1 : 1.0)
+                .rotationEffect(.degrees(subgoal.isCompleted ? 360 : 0))
             }
-
 
             TextField("Sub-goal", text: $subgoal.title)
                 .font(.body)

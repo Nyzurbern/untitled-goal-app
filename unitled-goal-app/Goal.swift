@@ -46,7 +46,11 @@ struct Subgoal: Identifiable, Hashable, Codable {
     var actionsorhabits: String = ""
     var resourcesorsupport: String = ""
     var sortIndex: Int
-    
+
+    // Derived from persisted subgoals, so it always matches and persists indirectly.
+    var subgoalscompleted: Int {
+        subgoals.filter { $0.isCompleted }.count
+    }
 
     init(
         id: UUID = UUID(),
@@ -65,8 +69,7 @@ struct Subgoal: Identifiable, Hashable, Codable {
         challenges: String = "",
         actionsorhabits: String = "",
         resourcesorsupport: String = "",
-        sortIndex: Int = 0,
-
+        sortIndex: Int = 0
     ) {
         self.id = id
         self.title = title
@@ -85,7 +88,6 @@ struct Subgoal: Identifiable, Hashable, Codable {
         self.actionsorhabits = actionsorhabits
         self.resourcesorsupport = resourcesorsupport
         self.sortIndex = sortIndex
-
     }
 }
 
@@ -140,3 +142,4 @@ struct Consumable: Identifiable, Hashable, Codable {
     var cost: Int
     var fillAmount: Int
 }
+
