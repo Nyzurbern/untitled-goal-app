@@ -46,6 +46,7 @@ struct Subgoal: Identifiable, Hashable, Codable {
     var actionsorhabits: String = ""
     var resourcesorsupport: String = ""
     var sortIndex: Int
+    
 
     init(
         id: UUID = UUID(),
@@ -64,7 +65,8 @@ struct Subgoal: Identifiable, Hashable, Codable {
         challenges: String = "",
         actionsorhabits: String = "",
         resourcesorsupport: String = "",
-        sortIndex: Int = 0
+        sortIndex: Int = 0,
+
     ) {
         self.id = id
         self.title = title
@@ -83,6 +85,7 @@ struct Subgoal: Identifiable, Hashable, Codable {
         self.actionsorhabits = actionsorhabits
         self.resourcesorsupport = resourcesorsupport
         self.sortIndex = sortIndex
+
     }
 }
 
