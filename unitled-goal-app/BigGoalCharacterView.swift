@@ -109,12 +109,13 @@ struct BigGoalCharacterView: View {
                 }
             } else {
                 if goal.character.profileImage == "Male Icon" {
-                    Text("☠️")
-                        .font(.system(size: 350))  // Replace with dead male image if available
+                    Image("dead male")
+                        .resizable()
+                        .scaledToFit()
                 } else if goal.character.profileImage == "Female Icon" {
-                    Text("☠️")  // Replace with dead female image if available
+                    Image("dead female")
                 } else if goal.character.profileImage == "Female Star Icon" {
-                    Text("☠️")  // Replace with dead female⭐️ image if available
+                    Image("dead female star")
                 }
                 Spacer()
                 VStack(spacing: 8) {

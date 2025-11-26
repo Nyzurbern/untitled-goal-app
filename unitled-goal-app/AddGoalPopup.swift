@@ -109,8 +109,8 @@ struct AddGoalPopupView: View {
                             ),
                             coins: 50,
                             failed: false,
-                            foodprogressbar: 30,
-                            drinksprogressbar: 30,
+                            foodprogressbar: 0,
+                            drinksprogressbar: 0,
                             characterName: CharacterName.trimmingCharacters(
                                 in: .whitespacesAndNewlines
                             ),
