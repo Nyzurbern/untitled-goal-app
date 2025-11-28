@@ -79,7 +79,6 @@ struct HomeView: View {
                 }
             }
             .navigationTitle("My Goals")
-            .lineSpacing(50)
             .sheet(isPresented: $showAddGoal) {
                 AddGoalPopupView()
                     .environmentObject(userData)
