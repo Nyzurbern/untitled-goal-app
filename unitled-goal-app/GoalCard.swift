@@ -12,7 +12,7 @@ struct GoalCardView: View {
     
     var body: some View {
         VStack(alignment: .leading, spacing: 10) {
-            HStack {
+            HStack(alignment: .top) {
                 VStack(alignment: .leading) {
                     Text(goal.title)
                         .font(.headline)
@@ -36,9 +36,6 @@ struct GoalCardView: View {
                 .clipShape(RoundedRectangle(cornerRadius: 6))
             
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 14).fill(.ultraThinMaterial))
-        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 4)
     }
 }
 //

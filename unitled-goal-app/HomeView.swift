@@ -26,61 +26,53 @@ struct HomeView: View {
         NavigationStack {
 
             VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 12) {
-
-                    Text("My goals")
-                        .font(.largeTitle)
-                        .bold()
-                    Spacer()
-                    Button {
-                        showAddGoal = true
-                    } label: {
-                        Image(
-                            systemName: "plus.circle.fill"
-                        )
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 14)
-                        .background(
-                            RoundedRectangle(cornerRadius: 10).fill(
-                                Color.blue
-                            )
-                        )
-                        .foregroundStyle(.white)
-                    }
-
-                }
-                .padding(.horizontal)
-                .padding(.top)
-
-                List {
-                    ForEach(
-                        goals.filter {
-                            !$0.isCompleted
-                        }
-                    ) { goal in
-                        NavigationLink {
-                            BigGoalCharacterView(goal: goal)
-                        } label: {
-                            GoalCardView(goal: goal)
-                        }
-                        .buttonStyle(PlainButtonStyle())
-                        .swipeActions(edge: .trailing) {
-                            Button(role: .destructive) {
-                                modelContext.delete(goal)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+                
+                if goals.filter ({!$0.isCompleted }).isEmpty {
+                    ContentUnavailableView("No goals", systemImage: "list.bullet", description: Text("You have no goals yet."))
+                } else {
+                    List {
+                        ForEach(
+                            goals.filter {
+                                !$0.isCompleted
                             }
-                            Button{
-                                selectedGoalForEditing = goal
-                            } label: {
-                                Label("Edit", systemImage: "pencil")
+                        ) { goal in
+                            
+                            Section {
+                                NavigationLink {
+                                    BigGoalCharacterView(goal: goal)
+                                } label: {
+                                    GoalCardView(goal: goal)
+                                }
+                                .buttonStyle(PlainButtonStyle())
+                                .swipeActions(edge: .trailing) {
+                                    Button(role: .destructive) {
+                                        modelContext.delete(goal)
+                                    } label: {
+                                        Label("Delete", systemImage: "trash")
+                                    }
+                                    Button{
+                                        selectedGoalForEditing = goal
+                                    } label: {
+                                        Label("Edit", systemImage: "pencil")
+                                    }
+                                }
                             }
                         }
                     }
+                    .listStyle(.automatic)
                 }
-                .listStyle(.automatic)
             }
-            .navigationTitle("")
+    
+            .toolbar{
+                Button {
+                    showAddGoal = true
+                } label: {
+                    Image(
+                        systemName: "plus"
+                    )
+                }
+            }
+            .navigationTitle("My Goals")
             .sheet(isPresented: $showAddGoal) {
                 AddGoalPopupView()
                     .environmentObject(userData)
