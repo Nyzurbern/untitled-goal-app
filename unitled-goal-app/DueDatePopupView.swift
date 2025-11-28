@@ -21,13 +21,15 @@ struct DueDatePopupView: View {
     var body: some View {
         NavigationStack {
             VStack(spacing: 12) {
-                Text(goal.title)
-                    .font(.title)
-                Text("IS DUE!")
-                    .font(.title)
-                    .foregroundStyle(.red)
-                Text("What's the status of this goal?")
-                    .font(.title2)
+
+                    Text("Your goal")
+                    .font(.title3)
+                    Text(goal.title)
+                        .font(.title)
+                        .fontWeight(.bold)
+                    Text(" is DUE!")
+                    .font(.title3)
+                        
                 NavigationLink {
                     ReflectionSheetView(
                         isShowingReflectionSheet: $isShowingReflectionSheet,
@@ -37,20 +39,21 @@ struct DueDatePopupView: View {
                     )
                 } label: {
                     Text("I didn't manage to do it..")
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 14)
+                        .frame(maxWidth: 200)
+                        .padding(14)
+                        .foregroundStyle(.white)
                         .background(
                             RoundedRectangle(cornerRadius: 10).fill(Color.red)
                         )
-                        .foregroundStyle(.white)
+
                 }
 
                 NavigationLink {
                     ExtendDueDateView(goal: goal)
                 } label: {
                     Text("I need more time!")
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 14)
+                        .padding(14)
+                        .frame(maxWidth: 230)
                         .background(
                             RoundedRectangle(cornerRadius: 10).fill(
                                 Color.yellow
@@ -68,8 +71,8 @@ struct DueDatePopupView: View {
                     )
                 } label: {
                     Text("I completed my goal!!!!")
-                        .padding(.vertical, 10)
-                        .padding(.horizontal, 14)
+                        .frame(maxWidth: 200)
+                        .padding(14)
                         .background(
                             RoundedRectangle(cornerRadius: 10).fill(Color.green)
                         )
