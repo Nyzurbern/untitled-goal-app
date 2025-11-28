@@ -12,19 +12,22 @@ struct ReflectionExpandedView: View {
     
     var body: some View {
         ScrollView {
-            VStack {
+            VStack(alignment: .leading) {
                 Text(goal.title)
                     .font(.title)
                     .bold()
-                    .padding()
+                    .padding(.vertical)
+
                 Text("What specific actions or habits contributed most to my progress?")
                     .font(.title2)
-                ZStack(alignment: .center) {
+                
+                ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .stroke(Color.black, lineWidth: 2)
                         .foregroundStyle(.background)
                         .frame(width: 325, height: 80)
                     Text(goal.actionsorhabits)
+                        .padding(.horizontal)
                 }
                 if goal.failed {
                     Text("What challenges prevented me from achieving my goal?")
@@ -35,22 +38,24 @@ struct ReflectionExpandedView: View {
                         .font(.title2)
                         .frame(maxWidth:315)
                 }
-                ZStack(alignment: .center) {
+                ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .stroke(Color.black, lineWidth: 2)
                         .foregroundStyle(.background)
                         .frame(width: 325, height: 80)
                     Text(goal.challenges)
+                        .padding(.horizontal)
                 }
                 Text("What resources or support were most helpful?")
                     .font(.title2)
                     .frame(maxWidth:315)
-                ZStack(alignment: .center) {
+                ZStack(alignment: .leading) {
                     RoundedRectangle(cornerRadius: 10, style: .continuous)
                         .stroke(Color.black, lineWidth: 2)
                         .foregroundStyle(.background)
                         .frame(width: 325, height: 80)
                     Text(goal.resourcesorsupport)
+                        .padding(.horizontal)
                 }
             }
             .frame(width: 350)

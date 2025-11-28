@@ -38,7 +38,6 @@ struct GoalEditingView: View {
                     TextField("Short description", text: $goal.desc)
                         .textInputAutocapitalization(.sentences)
                 }
-                //change this part
                 Section(header: Text("Deadline")) {
                     DatePicker("Deadline", selection: $goal.deadline, displayedComponents: .date)
                 }
@@ -46,7 +45,6 @@ struct GoalEditingView: View {
                     TextField("Character name", text: $goal.characterName)
                         .textInputAutocapitalization(.sentences)
                 }
-                
                 Section(header: Text("Character")) {
                     ScrollView(.horizontal) {
                         HStack {
@@ -75,6 +73,7 @@ struct GoalEditingView: View {
             .navigationTitle("Edit Goal")
             .toolbar{
                 ToolbarItem{
+   
                     Button("Done") {
                         dismiss()
                     }

@@ -30,6 +30,11 @@ struct HomeView: View {
                 if goals.filter ({!$0.isCompleted }).isEmpty {
                     ContentUnavailableView("No goals", systemImage: "list.bullet", description: Text("You have no goals yet."))
                 } else {
+                    Text("Swipe right on the goal to edit or delete.")
+                        .font(.default)
+                        .foregroundStyle(.gray)
+                        .frame(width: 400, alignment: .center)
+                    
                     List {
                         ForEach(
                             goals.filter {
