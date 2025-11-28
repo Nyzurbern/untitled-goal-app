@@ -42,7 +42,7 @@ struct AddGoalPopupView: View {
     var body: some View {
         NavigationStack {
             Form {
-                Section(header: Text("Goal Details")) {
+                Section(header: Text("Details")) {
                     TextField("Title", text: $title)
                         .textInputAutocapitalization(.sentences)
                     TextField("Short description", text: $description)
@@ -56,7 +56,7 @@ struct AddGoalPopupView: View {
                 Section(header: Text("Character")) {
                     ScrollView(.horizontal) {
                         
-                        TextField("Character name", text: $CharacterName)
+                        TextField("Name", text: $CharacterName)
                             .textInputAutocapitalization(.sentences)
                         
                         HStack {

@@ -14,22 +14,18 @@ struct ReflectionArchive: View {
     
     var body: some View {
         NavigationStack {
-            ScrollView {
-                VStack(alignment: .leading, spacing: 12) {
-                    if goals.isEmpty {
-                        Text(
-                            "No goals yet. Add a goal from the Home page to start reflecting."
-                        )
-                        .foregroundColor(.secondary)
-                        .padding()
-                        
-                    } else {
-                        LazyVStack(spacing: 16) {
-                            ForEach(
-                                goals.filter {
-                                    $0.isCompleted
-                                }
-                            ) { goal in
+            Group {
+                if goals.isEmpty {
+                    ContentUnavailableView("No Reflection", systemImage: "book", description: Text("A prompt for you to insert your reflections will only be presented if your goal is due."))
+                    
+                } else {
+                    List {
+                        ForEach(
+                            goals.filter {
+                                $0.isCompleted
+                            }
+                        ) { goal in
+                            Section {
                                 NavigationLink {
                                     ReflectionExpandedView(goal: goal)
                                 } label: {
@@ -37,9 +33,6 @@ struct ReflectionArchive: View {
                                 }
                             }
                         }
-                        Text("A prompt for you to insert your reflections will only be presented if your goal is due.")
-                            .padding()
-                            .foregroundStyle(.gray)
                     }
                 }
             }

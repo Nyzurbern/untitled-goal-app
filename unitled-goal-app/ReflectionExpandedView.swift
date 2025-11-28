@@ -11,55 +11,20 @@ struct ReflectionExpandedView: View {
     @State var goal: Goal
     
     var body: some View {
-        ScrollView {
-            VStack(alignment: .leading) {
-                Text(goal.title)
-                    .font(.title)
-                    .bold()
-                    .padding(.vertical)
-
-                Text("What specific actions or habits contributed most to my progress?")
-                    .font(.title2)
-                
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(Color.black, lineWidth: 2)
-                        .foregroundStyle(.background)
-                        .frame(width: 325, height: 80)
-                    Text(goal.actionsorhabits)
-                        .padding(.horizontal)
-                }
-                if goal.failed {
-                    Text("What challenges prevented me from achieving my goal?")
-                        .font(.title2)
-                        .frame(maxWidth:315)
-                } else {
-                    Text("What challenges or obstacles did I experience? How did I overcome them?")
-                        .font(.title2)
-                        .frame(maxWidth:315)
-                }
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(Color.black, lineWidth: 2)
-                        .foregroundStyle(.background)
-                        .frame(width: 325, height: 80)
-                    Text(goal.challenges)
-                        .padding(.horizontal)
-                }
-                Text("What resources or support were most helpful?")
-                    .font(.title2)
-                    .frame(maxWidth:315)
-                ZStack(alignment: .leading) {
-                    RoundedRectangle(cornerRadius: 10, style: .continuous)
-                        .stroke(Color.black, lineWidth: 2)
-                        .foregroundStyle(.background)
-                        .frame(width: 325, height: 80)
-                    Text(goal.resourcesorsupport)
-                        .padding(.horizontal)
-                }
+        Form {
+            Section ("What specific actions or habits contributed most to my progress?"){
+                Text(goal.actionsorhabits)
             }
-            .frame(width: 350)
+            
+            Section (goal.failed ? "What challenges prevented me from achieving my goal?" : "What challenges or obstacles did I experience? How did I overcome them?") {
+                Text(goal.challenges)
+            }
+        
+            Section ("What resources or support were most helpful?") {
+                Text(goal.resourcesorsupport)
+            }
         }
+        .navigationTitle(goal.title)
     }
 }
 

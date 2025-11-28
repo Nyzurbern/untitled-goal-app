@@ -27,6 +27,8 @@ struct AddSubGoalPopupView: View {
                     Section {
                         TextField("Title", text: $title)
                         DatePicker("Deadline", selection: $SubGoalDeadline, in: dateRange, displayedComponents: .date)
+                    }
+                    Section {
                         Text("Reward: \(reward) coins")
                     }
                 }

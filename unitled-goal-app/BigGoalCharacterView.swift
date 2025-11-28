@@ -200,22 +200,16 @@ struct BigGoalCharacterView: View {
             NavigationLink {
                 AddSubGoalPopupView(goal: goal)
             } label: {
-                Image(systemName: "plus.circle.fill")
-                    .padding(.vertical, 10)
-                    .padding(.horizontal, 14)
-                    .background(
-                        RoundedRectangle(cornerRadius: 10).fill(Color.blue)
-                    )
-                    .foregroundStyle(.white)
+                Image(systemName: "plus")
+                    .padding(8)
             }
+            .buttonBorderShape(.circle)
+            .buttonStyle(.glassProminent)
         }
     }
 
     private var emptySubgoalsMessage: some View {
-        Text("No subgoals yet. Add one to get started!")
-            .foregroundColor(.secondary)
-            .frame(maxWidth: .infinity, alignment: .center)
-            .padding()
+        ContentUnavailableView("No Subgoals", systemImage: "checklist", description: Text("Add one to get started!"))
     }
 
     private var subgoalsList: some View {

@@ -12,10 +12,10 @@ struct FoodShopView: View {
     @State private var showingBuyConfirm = false
     @State private var showingNoBalanceAlert = false
     @State private var missingCoins = 0
-//    @ObservedObject var ViewModel: GoalViewModel
+    //    @ObservedObject var ViewModel: GoalViewModel
     @Environment(\.dismiss) var dismiss
     @Bindable var goal: Goal
-
+    
     let items = [
         Consumable(
             name: "Chips",
@@ -43,64 +43,54 @@ struct FoodShopView: View {
         Consumable(name: "Dango", dftype: "Food", image: "Dango", cost: 60, fillAmount: 80),
         Consumable(name: "Avacado", dftype: "Food", image: "Avacado", cost: 70, fillAmount: 90)
     ]
-
+    
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    Text("Food Shop")
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.top)
-
-                    if goal.coins < 0 {
-                        Text("Coins: \(goal.coins) 😬")
-                            .foregroundColor(.red)
-                    } else {
-                        Text("Coins: \(goal.coins) 🪙")
-                            .font(.title2)
-                            .foregroundStyle(.yellow)
-                    }
-
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible()),
-                        ],
-                        spacing: 16
-                    ) {
-                        ForEach(Array(items.enumerated()), id: \.offset) {
-                            _,
-                            item in
-                            VStack(spacing: 8) {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.blue.opacity(0.12))
-                                    .frame(height: 120)
-                                    .overlay(Image(item.image)
-                                        .resizable()
-                                        .scaledToFit())
-                                Text(item.name)
-                                    .bold()
-                                Text("\(item.cost) coins")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Button("Buy") {
-                                    selectedItem = item
-                                    showingBuyConfirm = true
-                                }
-                                .buttonStyle(.borderedProminent)
+        ScrollView {
+            VStack(spacing: 16) {
+                
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible()),
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(Array(items.enumerated()), id: \.offset) {
+                        _,
+                        item in
+                        VStack(spacing: 8) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.blue.opacity(0.12))
+                                .frame(height: 120)
+                                .overlay(Image(item.image)
+                                    .resizable()
+                                    .scaledToFit())
+                            Text(item.name)
+                                .bold()
+                            Text("\(item.cost) coins")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Button("Buy") {
+                                selectedItem = item
+                                showingBuyConfirm = true
                             }
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 12).fill(
-                                    .ultraThinMaterial
-                                )
-                            )
+                            .buttonStyle(.borderedProminent)
                         }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12).fill(
+                                .ultraThinMaterial
+                            )
+                        )
                     }
-                    .padding()
                 }
+                .padding()
             }
+        }
+        .navigationTitle("Food Shop")
+        .toolbar{
+            Text("\(goal.coins) 🪙")
+                .padding(.horizontal)
         }
         .alert(
             "Buy \(selectedItem?.name ?? "item") for \(selectedItem?.cost ?? 0) coins?",

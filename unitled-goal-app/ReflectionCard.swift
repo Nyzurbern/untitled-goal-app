@@ -37,16 +37,8 @@ struct ReflectionCard: View {
                 .font(.default)
                 .foregroundStyle(.gray)
             }
-            VStack(alignment: .center){
-                Divider()
-                    .frame(maxWidth: 300)
-                Text("Tap to see more")
-            }
     
         }
-        .padding()
-        .background(RoundedRectangle(cornerRadius: 14).fill(.ultraThinMaterial))
-        .shadow(color: Color.black.opacity(0.08), radius: 6, x: 0, y: 4)
     }
 }
 

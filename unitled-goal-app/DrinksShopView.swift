@@ -14,7 +14,7 @@ struct DrinksShopView: View {
     @State private var missingCoins = 0
     @Environment(\.dismiss) var dismiss
     @Bindable var goal: Goal
-
+    
     let items = [
         Consumable(
             name: "Lemonade",
@@ -60,64 +60,54 @@ struct DrinksShopView: View {
         ),
         Consumable(name: "Frappuccino", dftype: "Drink", image: "frappuccino", cost: 50, fillAmount: 110)
     ]
-
+    
     var body: some View {
-        NavigationStack {
-            ScrollView {
-                VStack(spacing: 16) {
-                    Text("Drinks Shop")
-                        .font(.largeTitle)
-                        .bold()
-                        .padding(.top)
-
-                    if goal.coins < 0 {
-                        Text("Coins: \(goal.coins) 😬")
-                            .foregroundColor(.red)
-                    } else {
-                        Text("Coins: \(goal.coins) 🪙")
-                            .font(.title2)
-                            .foregroundStyle(.yellow)
-                    }
-
-                    LazyVGrid(
-                        columns: [
-                            GridItem(.flexible()),
-                            GridItem(.flexible()),
-                        ],
-                        spacing: 16
-                    ) {
-                        ForEach(Array(items.enumerated()), id: \.offset) {
-                            _,
-                            item in
-                            VStack(spacing: 8) {
-                                RoundedRectangle(cornerRadius: 12)
-                                    .fill(Color.blue.opacity(0.12))
-                                    .frame(height: 120)
-                                    .overlay(Image(item.image)
-                                        .resizable()
-                                        .scaledToFit())
-                                Text(item.name)
-                                    .bold()
-                                Text("\(item.cost) coins")
-                                    .font(.caption)
-                                    .foregroundColor(.secondary)
-                                Button("Buy") {
-                                    selectedItem = item
-                                    showingBuyConfirm = true
-                                }
-                                .buttonStyle(.borderedProminent)
+        ScrollView {
+            VStack(spacing: 16) {
+                
+                LazyVGrid(
+                    columns: [
+                        GridItem(.flexible()),
+                        GridItem(.flexible()),
+                    ],
+                    spacing: 16
+                ) {
+                    ForEach(Array(items.enumerated()), id: \.offset) {
+                        _,
+                        item in
+                        VStack(spacing: 8) {
+                            RoundedRectangle(cornerRadius: 12)
+                                .fill(Color.blue.opacity(0.12))
+                                .frame(height: 120)
+                                .overlay(Image(item.image)
+                                    .resizable()
+                                    .scaledToFit())
+                            Text(item.name)
+                                .bold()
+                            Text("\(item.cost) coins")
+                                .font(.caption)
+                                .foregroundColor(.secondary)
+                            Button("Buy") {
+                                selectedItem = item
+                                showingBuyConfirm = true
                             }
-                            .padding()
-                            .background(
-                                RoundedRectangle(cornerRadius: 12).fill(
-                                    .ultraThinMaterial
-                                )
-                            )
+                            .buttonStyle(.borderedProminent)
                         }
+                        .padding()
+                        .background(
+                            RoundedRectangle(cornerRadius: 12).fill(
+                                .ultraThinMaterial
+                            )
+                        )
                     }
-                    .padding()
                 }
+                .padding()
             }
+        }
+        .navigationTitle("Drinks Shop")
+        .toolbar{
+            Text("\(goal.coins) 🪙")
+                .padding(.horizontal)
         }
         .alert(
             "Buy \(selectedItem?.name ?? "item") for \(selectedItem?.cost ?? 0) coins?",
