@@ -114,8 +114,12 @@ struct BigGoalCharacterView: View {
                         .scaledToFit()
                 } else if goal.character.profileImage == "Female Icon" {
                     Image("dead female")
+                        .resizable()
+                        .scaledToFit()
                 } else if goal.character.profileImage == "Female Star Icon" {
                     Image("dead female star")
+                        .resizable()
+                        .scaledToFit()
                 }
                 Spacer()
                 VStack(spacing: 8) {
