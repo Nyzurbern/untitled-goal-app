@@ -22,7 +22,7 @@ struct ReflectionArchive: View {
                         )
                         .foregroundColor(.secondary)
                         .padding()
-
+                        
                     } else {
                         LazyVStack(spacing: 16) {
                             ForEach(
@@ -37,6 +37,9 @@ struct ReflectionArchive: View {
                                 }
                             }
                         }
+                        Text("A prompt for you to insert your reflections will only be presented if your goal is due.")
+                            .padding()
+                            .foregroundStyle(.gray)
                     }
                 }
             }
