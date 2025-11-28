@@ -11,8 +11,8 @@ import SwiftData
 struct AddSubGoalPopupView: View {
     @Environment(\.dismiss) var dismiss
     @State private var title = ""
-    @State private var reward = 10
     @State private var SubGoalDeadline = Date()
+    @State private var reward = 10
     @Query var goals: [Goal]
     @Bindable var goal: Goal
     var body: some View {
@@ -22,21 +22,21 @@ struct AddSubGoalPopupView: View {
         NavigationStack {
             Form {
                 if goals.isEmpty {
-                    Text("Add a goal first to attach sub-goals.").foregroundColor(.secondary)
+                    Text("Add a goal first to attach subgoals.").foregroundColor(.secondary)
                 } else {
                     Section {
                         TextField("Title", text: $title)
-                        Text("Reward: \(reward) coins")
                         DatePicker("Deadline", selection: $SubGoalDeadline, in: dateRange, displayedComponents: .date)
+                        Text("Reward: \(reward) coins")
                     }
                 }
             }
-            .navigationTitle("Add Sub-goal")
+            .navigationTitle("Add Subgoal")
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Add") {
                         guard !goals.isEmpty else { return }
-                        let s = Subgoal(title: title, isCompleted: false, coinReward: reward, deadline: SubGoalDeadline)
+                        let s = Subgoal(title: title, isCompleted: false, deadline: SubGoalDeadline, coinReward: reward)
                         goal.subgoals.append(s)
                         NotificationManager.shared.scheduleGoalNotifications(for: goal)
                         dismiss()

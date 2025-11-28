@@ -20,7 +20,7 @@ struct ContentView: View {
 
             ReflectionArchive()
                 .tabItem {
-                    Label("Archive", systemImage: "book.fill")
+                    Label("Journal", systemImage: "book.fill")
                 }
         }
         .onAppear {

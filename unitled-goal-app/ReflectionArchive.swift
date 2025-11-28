@@ -18,7 +18,7 @@ struct ReflectionArchive: View {
                 VStack(alignment: .leading, spacing: 12) {
                     if goals.isEmpty {
                         Text(
-                            "No goals yet. Add a goal from Home to start reflecting."
+                            "No goals yet. Add a goal from the Home page to start reflecting."
                         )
                         .foregroundColor(.secondary)
                         .padding()

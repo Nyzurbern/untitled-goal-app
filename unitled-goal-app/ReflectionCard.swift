@@ -13,37 +13,35 @@ struct ReflectionCard: View {
     @Bindable var goal: Goal
     
     var body: some View {
-        VStack(alignment: .center) {
+        VStack(alignment: .leading) {
             VStack(alignment: .leading) {
-                Text("Goal: " + goal.title)
-                    .font(.title)
+                Text(goal.title)
+                    .font(.title3)
+                    .fontWeight(.bold)
                     .foregroundStyle(.black)
                 HStack {
-                    Text("Status:")
-                        .font(.title2)
-                        .foregroundStyle(.black)
                     if goal.failed {
                         Text("Failed")
                             .foregroundStyle(.red)
-                            .font(.title2)
+                            .font(.default)
                     } else {
                         Text("Achieved")
                             .foregroundStyle(.green)
-                            .font(.title2)
+                            .font(.default)
                     }
                 }
                 HStack {
                     Text("Archived on:")
-                        .font(.title2)
-                        .foregroundStyle(.black)
                     Text(goal.deadline, format: .dateTime.day().month().year())
-                        .font(.title2)
-                        .foregroundStyle(.black)
                 }
+                .font(.default)
+                .foregroundStyle(.gray)
             }
-            Divider()
-                .frame(maxWidth: 300)
-            Text("Click to see more")
+            VStack(alignment: .center){
+                Divider()
+                    .frame(maxWidth: 300)
+                Text("Tap to see more")
+            }
     
         }
         .padding()

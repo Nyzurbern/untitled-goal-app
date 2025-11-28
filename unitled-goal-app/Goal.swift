@@ -19,8 +19,8 @@ struct Subgoal: Identifiable, Hashable, Codable {
     var id = UUID()
     var title: String
     var isCompleted: Bool = false
-    var coinReward: Int = 10
     var deadline: Date = Date()  // Needed for notification scheduling
+    var coinReward: Int = 10
 }
 
 @Model class Goal: Identifiable, Equatable {

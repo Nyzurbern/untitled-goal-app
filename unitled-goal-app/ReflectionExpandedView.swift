@@ -11,48 +11,50 @@ struct ReflectionExpandedView: View {
     @State var goal: Goal
     
     var body: some View {
-        VStack {
-            Text(goal.title)
-                .font(.title)
-                .bold()
-                .padding()
-            Text("What specific actions or habits contributed most to my progress?")
-                .font(.title2)
-            ZStack(alignment: .center) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color.black, lineWidth: 5)
-                    .foregroundStyle(.background)
-                    .frame(width: 325, height: 80)
-                Text(goal.actionsorhabits)
-            }
-            if goal.failed {
-                Text("What challenges prevented me from achieving my goal?")
+        ScrollView {
+            VStack {
+                Text(goal.title)
+                    .font(.title)
+                    .bold()
+                    .padding()
+                Text("What specific actions or habits contributed most to my progress?")
+                    .font(.title2)
+                ZStack(alignment: .center) {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.black, lineWidth: 2)
+                        .foregroundStyle(.background)
+                        .frame(width: 325, height: 80)
+                    Text(goal.actionsorhabits)
+                }
+                if goal.failed {
+                    Text("What challenges prevented me from achieving my goal?")
+                        .font(.title2)
+                        .frame(maxWidth:315)
+                } else {
+                    Text("What challenges or obstacles did I experience? How did I overcome them?")
+                        .font(.title2)
+                        .frame(maxWidth:315)
+                }
+                ZStack(alignment: .center) {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.black, lineWidth: 2)
+                        .foregroundStyle(.background)
+                        .frame(width: 325, height: 80)
+                    Text(goal.challenges)
+                }
+                Text("What resources or support were most helpful?")
                     .font(.title2)
                     .frame(maxWidth:315)
-            } else {
-                Text("What challenges or obstacles did I experience? How did I overcome them?")
-                    .font(.title2)
-                    .frame(maxWidth:315)
+                ZStack(alignment: .center) {
+                    RoundedRectangle(cornerRadius: 10, style: .continuous)
+                        .stroke(Color.black, lineWidth: 2)
+                        .foregroundStyle(.background)
+                        .frame(width: 325, height: 80)
+                    Text(goal.resourcesorsupport)
+                }
             }
-            ZStack(alignment: .center) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color.black, lineWidth: 5)
-                    .foregroundStyle(.background)
-                    .frame(width: 325, height: 80)
-                Text(goal.challenges)
-            }
-            Text("What resources or support were most helpful?")
-                .font(.title2)
-                .frame(maxWidth:315)
-            ZStack(alignment: .center) {
-                RoundedRectangle(cornerRadius: 10, style: .continuous)
-                    .stroke(Color.black, lineWidth: 5)
-                    .foregroundStyle(.background)
-                    .frame(width: 325, height: 80)
-                Text(goal.resourcesorsupport)
-            }
+            .frame(width: 350)
         }
-        .frame(width: 350)
     }
 }
 

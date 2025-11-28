@@ -52,11 +52,13 @@ struct AddGoalPopupView: View {
                         selection: $GoalDeadline,
                         displayedComponents: .date
                     )
-                    TextField("Character name", text: $CharacterName)
-                        .textInputAutocapitalization(.sentences)
                 }
                 Section(header: Text("Character")) {
                     ScrollView(.horizontal) {
+                        
+                        TextField("Character name", text: $CharacterName)
+                            .textInputAutocapitalization(.sentences)
+                        
                         HStack {
                             ForEach(
                                 Array(characterOptions.enumerated()),

@@ -193,7 +193,7 @@ struct BigGoalCharacterView: View {
 
     private var subgoalsHeader: some View {
         HStack {
-            Text("Sub-goals")
+            Text("Subgoals")
                 .font(.title2.bold())
             Spacer()
 
@@ -212,7 +212,7 @@ struct BigGoalCharacterView: View {
     }
 
     private var emptySubgoalsMessage: some View {
-        Text("No subgoals yet . Add one to get started!")
+        Text("No subgoals yet. Add one to get started!")
             .foregroundColor(.secondary)
             .frame(maxWidth: .infinity, alignment: .center)
             .padding()
@@ -375,14 +375,14 @@ struct SubgoalRow: View {
                 .rotationEffect(.degrees(subgoal.isCompleted ? 360 : 0))
             }
 
-            TextField("Sub-goal", text: $subgoal.title)
+            TextField("Subgoal", text: $subgoal.title)
                 .font(.body)
 
             Spacer()
 
             Text(subgoal.deadline, style: .date)
                 .font(.caption)
-                .foregroundColor(.yellow)
+                .foregroundColor(.orange)
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
                 .background(Color.yellow.opacity(0.2))

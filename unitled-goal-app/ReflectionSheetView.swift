@@ -52,13 +52,14 @@ struct ReflectionSheetView: View {
                     Button(action: archiveGoal) {
                         HStack {
                             Spacer()
-                            Text("Archive Goal")
+                            Text("Save to Reflections Journal")
                                 .fontWeight(.semibold)
                             Spacer()
                         }
                     }
-                    .foregroundColor(.red)
+                    .foregroundColor(.blue)
                 }
+                .frame(width: 300, height: 30)
             }
             .navigationTitle("Goal Reflection")
             .navigationBarTitleDisplayMode(.inline)
@@ -67,3 +68,4 @@ struct ReflectionSheetView: View {
         }
     }
 }
+
